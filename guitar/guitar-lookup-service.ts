@@ -58,9 +58,8 @@ export class GuitarLookupService
      */
     getChordTab(name: NoteName, quality: ChordQuality, variation: number): GuitarTab|undefined
     {
-        if (quality === "M") quality = "";
         //console.log("guitar chord: " + name + quality + variation);
-        var chords = this.chordPositionsMap[name + quality];
+        var chords = this.chordPositionsMap[name + ((quality === "M") ? "" : quality)];
         return (chords && chords[variation] ? chords[variation].slice() : undefined);
     }
 

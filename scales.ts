@@ -1,5 +1,5 @@
 import { Note } from "./notes";
-import { Key } from "./keys";
+import { MusicKey } from "./keys";
 
 export type ModeName = "lydian"|"M"|"major"|"ionian"|"mixolydian"|"dorian"|"m"|"minor"|"aeolian"|"phrygian"|"locrian";
 /** Mode names starting with ionian (major) */
@@ -39,7 +39,7 @@ const scaleIntervals = {};
  */
 export function getScale(tonic: Note, mode: ModeName = "major"): Note[] {
     mode = normalizeMode(mode);
-    const key = new Key(tonic.name, mode === "aeolian" ? "minor" : "major");
+    const key = new MusicKey(tonic.name, mode === "aeolian" ? "minor" : "major");
 
     const ints = scaleIntervals[mode];
     const scale = [tonic];

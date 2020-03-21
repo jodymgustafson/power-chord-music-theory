@@ -16,7 +16,7 @@ export type KeySignature = {
     count: number;
 }
 
-export class Key
+export class MusicKey
 {
     readonly tonic: NoteName;
     readonly mode: KeyMode;
@@ -27,7 +27,7 @@ export class Key
 
     constructor(tonic: NoteName, mode: KeyMode = "major") {
         this.tonic = tonic;
-        this.mode = mode;
+        this.mode = mode || "major";
         this.name = tonic + (mode === "major" ? "M" : "m")
     }
 
@@ -68,16 +68,16 @@ export class Key
     }
 }
 
-export function parseKey(key: string): Key {
+export function parseKey(key: string): MusicKey {
     const re = /([A-G]{1}[#|b]?)([m,M]?)/.exec(key);
     if (re && re[1])
-    return new Key(re[1] as NoteName, re[2] === "m" ? "minor" : "major")
+    return new MusicKey(re[1] as NoteName, re[2] === "m" ? "minor" : "major")
 }
 
 /**
  * Gets the key signature for a key
  */
-function getKeySignature(key: Key): KeySignature {
+function getKeySignature(key: MusicKey): KeySignature {
     let idx = circleOfFifths.findIndex(i => i === key.tonic);
     if (key.mode === "minor") {
         // This will move the index back 3 because Am - 3 == CM
@@ -89,11 +89,11 @@ function getKeySignature(key: Key): KeySignature {
     };
 }
 
-function getNotesInKey(key: Key): Note[] {
+function getNotesInKey(key: MusicKey): Note[] {
     return getScale(new Note(key.tonic), key.mode);
 }
 
-function getNoteInKey(nameOrNumber: NoteName|number, key: Key, octave?: number): Note
+function getNoteInKey(nameOrNumber: NoteName|number, key: MusicKey, octave?: number): Note
 {
     let note = new Note(nameOrNumber as any, octave);
     const noteName = note.name;
@@ -116,7 +116,7 @@ const scaleQualities = ["m", "dim", "", "m", "m", "", ""];
  * @param root  Root note number
  * @param minor (optional) Set to true for minor key
  */
-function getChordsInKey(key: Key): Chord[]
+function getChordsInKey(key: MusicKey): Chord[]
 {
     let chordsInScale: Chord[] = [];
     // Major and minor scales are offset by 2 places

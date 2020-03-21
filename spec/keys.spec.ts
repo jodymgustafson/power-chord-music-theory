@@ -1,7 +1,7 @@
-import { Key, parseKey } from "../keys";
+import { MusicKey, parseKey } from "../keys";
 import { Note } from "../notes";
 
-function validateKey(key: Key, expected: any): void {
+function validateKey(key: MusicKey, expected: any): void {
     expect(key.tonic).toBe(expected.tonic);
     expect(key.mode).toBe(expected.mode);
     expect(key.name).toBe(expected.name);
@@ -11,19 +11,19 @@ function validateKey(key: Key, expected: any): void {
 }
 
 describe("When get key using new", () => {
-    it("should get key of C", () => validateKey(new Key("C"), {
+    it("should get key of C", () => validateKey(new MusicKey("C"), {
         tonic: "C", mode: "major", name: "CM",
         chords: ["C", "Dm", "Em", "F", "G", "Am", "Bdim"],
         notes: ["C", "D", "E", "F", "G", "A", "B"],
         signature: { accidental: "#", count: 0 }}));
 
-    it("should get key of DM", () => validateKey(new Key("D", "major"), {
+    it("should get key of DM", () => validateKey(new MusicKey("D", "major"), {
         tonic: "D", mode: "major", name: "DM",
         chords: ["D", "Em", "F#m", "G", "A", "Bm", "C#dim"],
         notes: ["D", "E", "F#", "G", "A", "B", "C#"],
         signature: { accidental: "#", count: 2 }}));
 
-    it("should get key of Ebm using new", () => validateKey(new Key("Eb", "minor"), {
+    it("should get key of Ebm using new", () => validateKey(new MusicKey("Eb", "minor"), {
         tonic: "Eb", mode: "minor", name: "Ebm",
         chords: ["Ebm", "Fdim", "Gb", "Abm", "Bbm", "B", "Db"],
         notes: ["Eb", "F", "Gb", "Ab", "Bb", "B", "Db"],
@@ -51,13 +51,13 @@ describe("When get key using parseKey", () => {
 });
 
 describe("When get note in key", () => {
-    it("should get D in C", () => expect(new Key("C").getNoteInKey("D")).toEqual(new Note("D")));
+    it("should get D in C", () => expect(new MusicKey("C").getNoteInKey("D")).toEqual(new Note("D")));
     it("should get Eb in C minor", () => expect(parseKey("Cm").getNoteInKey("D#")).toEqual(new Note("Eb")));
 });
 
 describe("When get chords in key", () => {
     it("should get chords in C", () => {
-        const chords = new Key("C").chords;
+        const chords = new MusicKey("C").chords;
         expect(chords.length).toBe(7);
         expect(chords.map(c => c.name)).toEqual(["C", "Dm", "Em", "F", "G", "Am", "Bdim"]);
     });

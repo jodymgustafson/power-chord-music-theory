@@ -1,8 +1,8 @@
 import { ChordProgressionCalculator } from "../chord-progression-calculator";
-import { Key } from "../keys";
+import { MusicKey } from "../keys";
 
 describe("When get chord progressions in GM", () => {
-    const calc = new ChordProgressionCalculator(new Key("G"));
+    const calc = new ChordProgressionCalculator(new MusicKey("G"));
     it("should get root chords in GM", () => {
         expect(calc.rootChord().name).toBe("G");
     });

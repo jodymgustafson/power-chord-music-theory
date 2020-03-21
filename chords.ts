@@ -1,7 +1,7 @@
 import { NoteName, Note } from "./notes";
 
 /** Supported chord qualities */
-export type ChordQuality = ""|"M"|"m"|"7"|"M7"|"m7"|"dim"|"dim7"|"sus4"|"sus2"|"aug"|"5"|"M6"|"m6"|"add2"|"9"|"M9"|"m9";
+export type ChordQuality = "M"|"m"|"7"|"M7"|"m7"|"dim"|"dim7"|"sus4"|"sus2"|"aug"|"5"|"M6"|"m6"|"add2"|"9"|"M9"|"m9";
 
 export const chordIntervals = {
     "M": [0, 4, 7],
@@ -48,7 +48,7 @@ export class Chord
 
     constructor(root: NoteName, quality: ChordQuality = "M", bass: NoteName = root) {
         this.root = root;
-        this.quality = quality;
+        this.quality = quality || "M";
         this.bass = bass;
         this.name = root + (quality === "M" ? "" : quality) + (bass !== root ? ("/" + bass) : "")
     }

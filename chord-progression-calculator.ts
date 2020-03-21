@@ -1,4 +1,4 @@
-import { Key } from "./keys";
+import { MusicKey } from "./keys";
 import { Chord } from "./chords";
 
 var majorProgressions = [
@@ -29,7 +29,7 @@ export class ChordProgressionCalculator
     private progressions: number[][];
 
     /** Set the chords and quality used to find the chord progressions */
-    constructor(key: Key)
+    constructor(key: MusicKey)
     {
         this.chords = key.chords;
         this.progressions = (key.mode === "minor" ? minorProgressions : majorProgressions);

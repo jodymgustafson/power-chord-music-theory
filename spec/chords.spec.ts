@@ -1,7 +1,6 @@
 import { parseChord, Chord } from "../chords";
 
-function validateParseChord(chord: string, expected: any): void {
-    const c = parseChord(chord);
+function validateParseChord(c: Chord, expected: any): void {
     expect(c.root).toBe(expected.root);
     expect(c.quality).toBe(expected.quality);
     expect(c.bass).toBe(expected.bass);
@@ -11,42 +10,45 @@ function validateParseChord(chord: string, expected: any): void {
 }
 
 describe("When parse chords", () => {
+    it("should get chord C using new", () => {
+        validateParseChord(new Chord("C"), { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7] });
+    });
     it("should get chord C", () => {
-        validateParseChord("C", { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7] });
+        validateParseChord(parseChord("C"), { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7] });
     });
     it("should get chord CM", () => {
-        validateParseChord("CM", { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7] });
+        validateParseChord(parseChord("CM"), { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7] });
     });
     it("should get chord C7", () => {
-        validateParseChord("C7", { root: "C", quality: "7", name: "C7", bass: "C", inversionCount: 4, intervals: [0, 4, 7, 10] });
+        validateParseChord(parseChord("C7"), { root: "C", quality: "7", name: "C7", bass: "C", inversionCount: 4, intervals: [0, 4, 7, 10] });
     });
     it("should get chord Dm", () => {
-        validateParseChord("Dm", { root: "D", quality: "m", name: "Dm", bass: "D", inversionCount: 3, intervals: [0, 3, 7] });
+        validateParseChord(parseChord("Dm"), { root: "D", quality: "m", name: "Dm", bass: "D", inversionCount: 3, intervals: [0, 3, 7] });
     });
     it("should get chord Em7", () => {
-        validateParseChord("Em7", { root: "E", quality: "m7", name: "Em7", bass: "E", inversionCount: 4, intervals: [0, 3, 7, 10] });
+        validateParseChord(parseChord("Em7"), { root: "E", quality: "m7", name: "Em7", bass: "E", inversionCount: 4, intervals: [0, 3, 7, 10] });
     });
     it("should get chord EbM7", () => {
-        validateParseChord("EbM7", { root: "Eb", quality: "M7", name: "EbM7", bass: "Eb", inversionCount: 4, intervals: [0, 4, 7, 11] });
+        validateParseChord(parseChord("EbM7"), { root: "Eb", quality: "M7", name: "EbM7", bass: "Eb", inversionCount: 4, intervals: [0, 4, 7, 11] });
     });
     it("should get chord B#sus2", () => {
-        validateParseChord("B#sus2", { root: "B#", quality: "sus2", name: "B#sus2", bass: "B#", inversionCount: 1, intervals: [0, 2, 7] });
+        validateParseChord(parseChord("B#sus2"), { root: "B#", quality: "sus2", name: "B#sus2", bass: "B#", inversionCount: 1, intervals: [0, 2, 7] });
     });
 
     it("should get chord C/G", () => {
-        validateParseChord("C/G", { root: "C", quality: "M", name: "C/G", bass: "G", inversionCount: 3, intervals: [0, 4, 7] });
+        validateParseChord(parseChord("C/G"), { root: "C", quality: "M", name: "C/G", bass: "G", inversionCount: 3, intervals: [0, 4, 7] });
     });
     it("should get chord CM/G", () => {
-        validateParseChord("CM/G", { root: "C", quality: "M", name: "C/G", bass: "G", inversionCount: 3, intervals: [0, 4, 7] });
+        validateParseChord(parseChord("CM/G"), { root: "C", quality: "M", name: "C/G", bass: "G", inversionCount: 3, intervals: [0, 4, 7] });
     });
     it("should get chord Ddim/A", () => {
-        validateParseChord("Ddim/A", { root: "D", quality: "dim", name: "Ddim/A", bass: "A", inversionCount: 3, intervals: [0, 3, 6] });
+        validateParseChord(parseChord("Ddim/A"), { root: "D", quality: "dim", name: "Ddim/A", bass: "A", inversionCount: 3, intervals: [0, 3, 6] });
     });
     it("should get chord F#sus4/C#", () => {
-        validateParseChord("F#sus4/C#", { root: "F#", quality: "sus4", name: "F#sus4/C#", bass: "C#", inversionCount: 2, intervals: [0, 5, 7] });
+        validateParseChord(parseChord("F#sus4/C#"), { root: "F#", quality: "sus4", name: "F#sus4/C#", bass: "C#", inversionCount: 2, intervals: [0, 5, 7] });
     });
     it("should get chord B5/F#", () => {
-        validateParseChord("B5/F#", { root: "B", quality: "5", name: "B5/F#", bass: "F#", inversionCount: 1, intervals: [0, 7] });
+        validateParseChord(parseChord("B5/F#"), { root: "B", quality: "5", name: "B5/F#", bass: "F#", inversionCount: 1, intervals: [0, 7] });
     });
 
     it("should get undefined when invalid", () => {

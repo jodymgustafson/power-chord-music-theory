@@ -19,15 +19,15 @@ describe("When get note number", () => {
 });
 
 describe("When getChordTab", () => {
-    it("should get tab for C", () => expect(lookup.getChordTab("C", "", 0)).toEqual([-1, 3, 2, 0, 1, 0]));
-    it("should get tab for C-1", () => expect(lookup.getChordTab("C", "", 1)).toEqual([-1, 3, 5, 5, 5, 3]));
-    it("should get tab for C-2", () => expect(lookup.getChordTab("C", "", 2)).toEqual([8, 10, 10, 9, 8, 8]));
+    it("should get tab for C", () => expect(lookup.getChordTab("C", "M", 0)).toEqual([-1, 3, 2, 0, 1, 0]));
+    it("should get tab for C-1", () => expect(lookup.getChordTab("C", "M", 1)).toEqual([-1, 3, 5, 5, 5, 3]));
+    it("should get tab for C-2", () => expect(lookup.getChordTab("C", "M", 2)).toEqual([8, 10, 10, 9, 8, 8]));
     //it("should get tab for C-3", () => expect(lookup.getChordTab("C", "", 3)).toEqual([-1, -1, 10, 9, 8, 8]));
     it("should get tab for C#m", () => expect(lookup.getChordTab("C#", "m", 0)).toEqual([-1, 4, 2, 1, 2, -1]));
     it("should get tab for D7", () => expect(lookup.getChordTab("D", "7", 0)).toEqual([-1, -1, 0, 2, 1, 2]));
     it("should get tab for EbM7", () => expect(lookup.getChordTab("Eb", "M7", 0)).toEqual([-1, 6, 5, 3, 3, 3]));
     it("should get tab for Ebm", () => expect(lookup.getChordTab("Eb", "m", 0)).toEqual([-1, -1, 1, 3, 4, 2]));
-    it("should get undefined when invalid", () => expect(lookup.getChordTab("C", "", 23)).toBeUndefined());
+    it("should get undefined when invalid", () => expect(lookup.getChordTab("C", "M", 23)).toBeUndefined());
 });
 
 describe("When getChordTabs", () => {
