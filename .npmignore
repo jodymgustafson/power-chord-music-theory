@@ -1,0 +1,6 @@
+*.tgz
+**/*.ts
+!**/*.d.ts
+node_modules
+spec
+.git
