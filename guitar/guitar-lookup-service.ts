@@ -3,16 +3,6 @@ import { ChordQuality } from "../chords";
 
 export type GuitarChordPositions = {[key: string]:number[][]};
 
-// Note numbers of open strings in default tuning
-const DEFAULT_OPEN_NOTES = [
-    new Note("E", 4),
-    new Note("B", 3),
-    new Note("G", 3),
-    new Note("D", 3),
-    new Note("A", 2),
-    new Note("E", 2)
-];
-
 /** Represents a guitar tab where the first number is the 6th string and the last is the first string */
 export type GuitarTab = number[];
 
@@ -25,7 +15,7 @@ export class GuitarLookupService
      * @param chordPositionsMap
      * @param openNotes Notes that the strings are tuned to (from top to bottom, high to low)
      */
-    constructor(private readonly chordPositionsMap: GuitarChordPositions, private readonly openNotes = DEFAULT_OPEN_NOTES) { }
+    constructor(private readonly chordPositionsMap: GuitarChordPositions, private readonly openNotes: Note[]) { }
 
     /**
      * Gets the note at the specified position

@@ -14,25 +14,26 @@ export type FifthInfo = {
     degreeRoman: string
 }
 
-export const keys = new CircularList<NoteName>(["C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"]);
-export const degreeNames: DegreeName[] = ["Tonic", "Supertonic", "Mediant", "Subdominant", "Dominant", "Submediant", "Leading Tone"];
+export const tonicNoteNames: NoteName[] = ["C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"];
+export const tonicNames = new CircularList<NoteName>(tonicNoteNames);
 /** Mode names in circle of fisths order beginning with lydian */
 export const circleModes: ModeName[] = ["lydian", "ionian", "mixolydian", "dorian", "aeolian", "phrygian", "locrian"];
+/** Name for each note in a scale */
+export const degreeNames: DegreeName[] = ["Tonic", "Supertonic", "Mediant", "Subdominant", "Dominant", "Submediant", "Leading Tone"];
 
 const modeQualities = new CircularList<ModeQuality>(["M", "M", "M", "m", "m", "m", "d"]);
 const degreeNumbers = new CircularList<DegreeNumber>([1, 5, 2, 6, 3, 7, 4]);
 const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII"];
 //const modeIntervals = [2, 2, 2, 1, 2, 2, 1];
 
-/** Normalizes a key to one of the standard seven keys */
-function normalizeKey(key: NoteName): NoteName
-{
-    return key === "Db" ? "C#" :
-           key === "D#" ? "Eb" :
-           key === "Gb" ? "F#" :
-           key === "G#" ? "Ab" :
-           key === "A#" ? "Bb" :
-           key;
+/** Normalizes a tonic to one of the standard names */
+export function normalizeTonic(tonic: NoteName): NoteName {
+    return tonic === "Db" ? "C#" :
+           tonic === "D#" ? "Eb" :
+           tonic === "Gb" ? "F#" :
+           tonic === "G#" ? "Ab" :
+           tonic === "A#" ? "Bb" :
+           tonic;
 }
 
 /**
@@ -40,24 +41,23 @@ function normalizeKey(key: NoteName): NoteName
  * @param degree Degree number where 1 is the tonic (1 to 7)
  * @param quality Major, minor or diminished
  */
-export function getDegreeRomanNumeral(degree: DegreeNumber, quality: ModeQuality)
-{
+export function getDegreeRomanNumeral(degree: DegreeNumber, quality: ModeQuality) {
     const roman = romanNumerals[degree - 1];
     return quality === "d" ? roman.toLowerCase() + "°" :
            quality === "m" ? roman.toLowerCase() :
            roman;
 }
 
-/** Gets all of the fifths for a key and mode in display order on the circle */
-export function getFifths(key: NoteName, mode: ModeName): FifthInfo[] {
-    const keyNumber = getKeyNumber(key);
+/** Gets all of the fifths for a tonic and mode in display order on the circle */
+export function getFifths(tonic: NoteName, mode: ModeName): FifthInfo[] {
+    const tonicNumber = getTonicNumber(tonic);
     const modeNumber = getModeNumber(mode);
     const start = -1 * modeNumber;
 
     const fifths: FifthInfo[] = [];
     for (let i = 0; i < 7; i++)
     {
-        const noteNumber = keyNumber + start + i;
+        const noteNumber = tonicNumber + start + i;
         const degreeNumber = degreeNumbers.itemAt(start + i);
         const quality = modeQualities.itemAt(i);
         fifths.push(getFifthInfo(quality, noteNumber, degreeNumber));
@@ -68,7 +68,7 @@ export function getFifths(key: NoteName, mode: ModeName): FifthInfo[] {
 
 function getFifthInfo(quality: ModeQuality, noteNumber: number, degreeNumber: DegreeNumber): FifthInfo {
     return {
-        note: keys.itemAt(noteNumber),
+        note: tonicNames.itemAt(noteNumber),
         position: noteNumber,
         quality: quality,
         degreeNumber: degreeNumber,
@@ -77,9 +77,9 @@ function getFifthInfo(quality: ModeQuality, noteNumber: number, degreeNumber: De
     };
 }
 
-/** Gets the number of the key in the circle where C == 0, G == 1, etc */
-export function getKeyNumber(key: NoteName) {
-    return keys.indexOf(normalizeKey(key));
+/** Gets the number of the tonic in the circle where C == 0, G == 1, etc */
+export function getTonicNumber(tonic: NoteName) {
+    return tonicNames.indexOf(normalizeTonic(tonic));
 }
 
 /**

@@ -1,6 +1,5 @@
-import { getChordFromNotes } from "../chord-lookup-service"
-import { Note, getNotes } from "../notes"
-import { parseChord } from "../chords";
+import { getChordFromNotes } from "../chord-lookup"
+import { getNotes } from "../notes"
 
 describe("When get chord from notes", () => {
     it("should get C", () => {

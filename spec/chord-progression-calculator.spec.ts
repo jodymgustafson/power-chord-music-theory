@@ -1,8 +1,9 @@
 import { ChordProgressionCalculator } from "../chord-progression-calculator";
-import { MusicKey } from "../keys";
+import { Chord, parseChord } from "../chords";
+import { parseKey } from "../scales";
 
 describe("When get chord progressions in GM", () => {
-    const calc = new ChordProgressionCalculator(new MusicKey("G"));
+    const calc = new ChordProgressionCalculator(parseKey("G"));
     it("should get root chords in GM", () => {
         expect(calc.rootChord().name).toBe("G");
     });
@@ -16,25 +17,25 @@ describe("When get chord progressions in GM", () => {
         expect(calc.getChordAt(6).name).toBe("F#dim");
     });
     it("should get chords after G", () => {
-        expect(calc.getNextChords(calc.getChordAt(0)).map(c => c.name)).toEqual(["G", "Am", "Bm", "C", "D", "Em", "F#dim"]);
+        expect(calc.getNextChords(new Chord("G")).map(c => c.name)).toEqual(["G", "Am", "Bm", "C", "D", "Em", "F#dim"]);
     });
     it("should get chords after Am", () => {
-        expect(calc.getNextChords(calc.getChordAt(1)).map(c => c.name)).toEqual(["G", "Am", "D", "F#dim"]);
+        expect(calc.getNextChords(parseChord("Am")).map(c => c.name)).toEqual(["G", "Am", "D", "F#dim"]);
     });
     it("should get chords after Bm", () => {
-        expect(calc.getNextChords(calc.getChordAt(2)).map(c => c.name)).toEqual(["G", "Bm", "C", "Em"]);
+        expect(calc.getNextChords(parseChord("Bm")).map(c => c.name)).toEqual(["G", "Bm", "C", "Em"]);
     });
     it("should get chords after C", () => {
-        expect(calc.getNextChords(calc.getChordAt(3)).map(c => c.name)).toEqual(["G", "Am", "C", "D", "F#dim"]);
+        expect(calc.getNextChords(parseChord("C")).map(c => c.name)).toEqual(["G", "Am", "C", "D", "F#dim"]);
     });
     it("should get chords after D", () => {
-        expect(calc.getNextChords(calc.getChordAt(4)).map(c => c.name)).toEqual(["G", "D", "Em"]);
+        expect(calc.getNextChords(parseChord("D")).map(c => c.name)).toEqual(["G", "D", "Em"]);
     });
     it("should get chords after Em", () => {
-        expect(calc.getNextChords(calc.getChordAt(5)).map(c => c.name)).toEqual(["G", "Am", "Bm", "C", "D", "Em"]);
+        expect(calc.getNextChords(parseChord("Em")).map(c => c.name)).toEqual(["G", "Am", "Bm", "C", "D", "Em"]);
     });
     it("should get chords after F#dim", () => {
-        expect(calc.getNextChords(calc.getChordAt(6)).map(c => c.name)).toEqual(["G", "F#dim"]);
+        expect(calc.getNextChords(parseChord("F#dim")).map(c => c.name)).toEqual(["G", "F#dim"]);
     });
 });
 
