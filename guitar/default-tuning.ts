@@ -1,6 +1,16 @@
-import { NoteName } from "../notes";
+import { NoteName, Note } from "../notes";
 import { ChordQuality, Chord } from "../chords";
 import { GuitarLookupService, GuitarChordPositions } from "./guitar-lookup-service";
+
+// Note numbers of open strings in default tuning
+export const DEFAULT_OPEN_NOTES = [
+    new Note("E", 4),
+    new Note("B", 3),
+    new Note("G", 3),
+    new Note("D", 3),
+    new Note("A", 2),
+    new Note("E", 2)
+];
 
 /**
  * Gets a chord lookup service for 6-string guitar with default EADGBE tuning
@@ -150,4 +160,4 @@ function getMinFret(chord: number[]): number
 // This contains a list of every chord mapped to finger positions
 const chordPositions = buildGuitarChords();
 
-const defaultTuningGuitarLookup = new GuitarLookupService(chordPositions); 
+const defaultTuningGuitarLookup = new GuitarLookupService(chordPositions, DEFAULT_OPEN_NOTES); 

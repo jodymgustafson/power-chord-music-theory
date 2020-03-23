@@ -1,4 +1,5 @@
-import { NoteName, Note } from "./notes";
+import { NoteName, Note, Accidental } from "./notes";
+import { formatAccidentals } from "./util/format";
 
 /** Supported chord qualities */
 export type ChordQuality = "M"|"m"|"7"|"M7"|"m7"|"dim"|"dim7"|"sus4"|"sus2"|"aug"|"5"|"M6"|"m6"|"add2"|"9"|"M9"|"m9";
@@ -41,7 +42,7 @@ export class Chord
 {
     readonly root: NoteName;
     readonly quality: ChordQuality;
-    readonly bass: NoteName|"";
+    readonly bass: NoteName;
     readonly name: string;
 
     private _notes: Note[];
@@ -51,6 +52,13 @@ export class Chord
         this.quality = quality || "M";
         this.bass = bass;
         this.name = root + (quality === "M" ? "" : quality) + (bass !== root ? ("/" + bass) : "")
+    }
+
+    /**
+     * Returns name with accidentals formatted
+     */
+    get formattedName(): string {
+        return formatAccidentals(this.name);
     }
 
     get notes(): Note[] {
@@ -63,6 +71,34 @@ export class Chord
 
     get bassNote(): Note {
         return this.notes.find(n => n.name == this.bass);
+    }
+
+    /**
+     * Gets the accidental of the chord, or empty string
+     */
+    get accidental(): Accidental {
+        return this.root.charAt(1) as Accidental;
+    }
+
+    /**
+     * Returns true if the chord has a flat or sharp accidental
+     */
+    get hasAccidental(): boolean {
+        return this.accidental.length > 0;
+    }
+
+    /**
+     * Returns true if a chord has a sharp accidental
+     */
+    get isSharp(): boolean {
+        return this.accidental === "#";
+    }
+
+    /**
+     * Returns true if a chord has a flat accidental
+     */
+    get isFlat(): boolean {
+        return this.accidental === "b";
     }
 
     /**

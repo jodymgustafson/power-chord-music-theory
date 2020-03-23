@@ -1,5 +1,5 @@
-import { MusicKey } from "./keys";
 import { Chord } from "./chords";
+import { MusicScale } from "./scales";
 
 var majorProgressions = [
     [0, 1, 2, 3, 4, 5, 6],  // I => any
@@ -29,27 +29,23 @@ export class ChordProgressionCalculator
     private progressions: number[][];
 
     /** Set the chords and quality used to find the chord progressions */
-    constructor(key: MusicKey)
-    {
+    constructor(readonly key: MusicScale) {
         this.chords = key.chords;
         this.progressions = (key.mode === "minor" ? minorProgressions : majorProgressions);
     }
 
     /** Gets the chord at the specified position in the scale (from the chords set in setChords()) */
-    public getChordAt(num: number): Chord
-    {
+    public getChordAt(num: number): Chord {
         return this.chords[num];
     }
 
     /** Gets the root chord for the progression */
-    public rootChord(): Chord
-    {
+    public rootChord(): Chord {
         return this.getChordAt(0);
     }
 
     /** Gets the list of possible chords that could follow a chord */
-    public getNextChords(chord: Chord): Chord[]
-    {
+    public getNextChords(chord: Chord): Chord[] {
         let num = this.getChordNumber(chord);
         // If it's not a valid chord set to root
         if (num < 0) {
@@ -60,8 +56,7 @@ export class ChordProgressionCalculator
 
         // Build list of chords
         let nextChords: Chord[] = [];
-        for (var i = 0; i < progs.length; i++)
-        {
+        for (var i = 0; i < progs.length; i++) {
             nextChords.push(this.chords[progs[i]]);
         }
 
@@ -72,8 +67,7 @@ export class ChordProgressionCalculator
      * Gets the number of the chord in the current key where the tonic is 0.
      * If the chord doesn't exist in the key -1 is returned.
      */
-    public getChordNumber(chord: Chord): number
-    {
-        return this.chords.findIndex(c => c === chord);
+    public getChordNumber(chord: Chord): number {
+        return this.chords.findIndex(c => c.name === chord.name);
     }
 }

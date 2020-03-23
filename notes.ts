@@ -1,4 +1,7 @@
+import { formatAccidentals } from "./util/format";
+
 export type NoteName = "C"|"C#"|"Db"|"D"|"D#"|"Eb"|"E"|"E#"|"Fb"|"F"|"F#"|"Gb"|"G"|"G#"|"Ab"|"A"|"A#"|"Bb"|"B"|"B#"|"Cb";
+export type Accidental = "#"|"b"|"";
 
 // Integer notation                              0    1     2    3     4    5    6     7    8     9    10    11
 export const STANDARD_NOTE_NAMES: NoteName[] = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
@@ -91,23 +94,48 @@ export class Note
         this.alias = noteInfo.alias as NoteName;
     }
 
-    /** Gets a new note that is this note transposed by the specified amount */
-    transpose(steps: number): Note {
-        return new Note(this.number + steps, this.octave);
+    get aliasNote(): Note {
+        return this.alias ? new Note(this.alias) : this;
+    }
+
+    /**
+     * Returns name with accidentals formatted
+     */
+    get formattedName(): string {
+        return formatAccidentals(this.name);
+    }
+
+    /**
+     * Gets the accidental of the note, or empty string
+     */
+    get accidental(): Accidental {
+        return this.name.charAt(1) as Accidental;
+    }
+
+    /**
+     * Returns true if the note has a flat or sharp accidental
+     */
+    get hasAccidental(): boolean {
+        return this.accidental.length > 0;
     }
 
     /**
      * Returns true if a note has a sharp accidental
      */
     get isSharp(): boolean {
-        return this.name.charAt(1) === "#";
+        return this.accidental === "#";
     }
 
     /**
      * Returns true if a note has a flat accidental
      */
     get isFlat(): boolean {
-        return this.name.charAt(1) === "b";
+        return this.accidental === "b";
+    }
+
+    /** Gets a new note that is this note transposed by the specified amount */
+    transpose(steps: number): Note {
+        return new Note(this.number + steps, this.octave);
     }
 }
 
