@@ -46,6 +46,7 @@ export class MusicScale
     readonly tonic: NoteName;
     readonly mode: ModeName;
     readonly name: string;
+    readonly modeAlias: ModeName|"";
     private _notes: Note[];
     private _chords: Chord[];
     private _signature: KeySignature;
@@ -54,6 +55,7 @@ export class MusicScale
         this.tonic = tonic;
         this.mode = normalizeMode(mode);
         this.name = tonic + (this.mode === "ionian" ? "M" : this.mode === "aeolian" ? "m" : `(${this.mode.slice(0,3)})`);
+        this.modeAlias = this.mode === "ionian" ? "major" : this.mode === "aeolian" ? "minor" : "";
     }
 
     /**
@@ -168,7 +170,7 @@ function getNotesInScale(scale: MusicScale): Note[] {
     for (let i = 1; i < 7; i++) {
         let note = tonicNote.transpose(ints[i]);
         // What should we call it in this scale?
-        if (note.alias && note.aliasNote.accidental === scaleAccidental) {
+        if (note.alias && note.accidental !== tonicNote.accidental && note.aliasNote.accidental === scaleAccidental) {
             note = note.aliasNote;
         }
         notes.push(note);
