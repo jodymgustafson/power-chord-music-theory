@@ -1,7 +1,7 @@
 import { Chord } from "./chords";
 import { MusicScale } from "./scales";
 
-var majorProgressions = [
+const majorProgressions = [
     [0, 1, 2, 3, 4, 5, 6],  // I => any
     [0, 1, 4, 6],           // ii => V, vii*
     [0, 2, 3, 5],           // iii => IV, vi
@@ -10,7 +10,7 @@ var majorProgressions = [
     [0, 1, 2, 3, 4, 5],     // vi => ii, iii, IV, V
     [0, 6],                 // vii* => I
 ];
-var minorProgressions = [
+const minorProgressions = [
     [0, 1, 2, 3, 4, 5, 6],  // i => any
     [0, 1, 4, 6],           // ii* => V, vii*
     [0, 2, 3, 5, 6],        // III => iv, VI, vii*
@@ -56,7 +56,7 @@ export class ChordProgressionCalculator
 
         // Build list of chords
         let nextChords: Chord[] = [];
-        for (var i = 0; i < progs.length; i++) {
+        for (let i = 0; i < progs.length; i++) {
             nextChords.push(this.chords[progs[i]]);
         }
 

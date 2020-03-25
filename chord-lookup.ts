@@ -1,11 +1,11 @@
 import { sortNotes, Note, NoteName } from "./notes";
-import { ChordQuality, Chord, getChordIntervals, chordIntervals, parseChord } from "./chords";
+import { ChordQuality, Chord, getChordIntervals, chordIntervals } from "./chords";
 
 /** Gets the chord with the specified notes, or undefined if not found */
-export function getChordFromNotes(...notes: NoteName[]): Chord|undefined;
+export function getChordFromNotes(...notes: NoteName[]): Chord | undefined;
 /** Gets the chord with the specified notes, or undefined if not found */
-export function getChordFromNotes(...notes: Note[]): Chord|undefined;
-export function getChordFromNotes(...notesOrNames: NoteName[]|Note[]): Chord|undefined {
+export function getChordFromNotes(...notes: Note[]): Chord | undefined;
+export function getChordFromNotes(...notesOrNames: NoteName[] | Note[]): Chord | undefined {
     let notes: Note[];
     if (typeof notesOrNames[0] === "string") {
         notes = (notesOrNames as NoteName[]).map(n => new Note(n));
@@ -37,20 +37,16 @@ export function getChordFromNotes(...notesOrNames: NoteName[]|Note[]): Chord|und
     return undefined;
 }
 
-function getNextPermutation(notes: Note[]): Note[]
-{
+function getNextPermutation(notes: Note[]): Note[] {
     notes.push(notes.shift());
     return notes;
 }
 
-function lookupQualityByIntervals(intervals: number[]): ChordQuality | undefined
-{
-    for (var i in chordIntervals)
-    {
+function lookupQualityByIntervals(intervals: number[]): ChordQuality | undefined {
+    for (const i in chordIntervals) {
         const quality = i as ChordQuality;
-        var chordInts = getChordIntervals(quality);
-        if (compareIntervals(chordInts, intervals))
-        {
+        const chordInts = getChordIntervals(quality);
+        if (compareIntervals(chordInts, intervals)) {
             return quality;
         }
     }
@@ -58,14 +54,12 @@ function lookupQualityByIntervals(intervals: number[]): ChordQuality | undefined
 }
 
 /** Gets the intervals for the notes */
-function getIntervals(notes: Note[]): number[]
-{
-    var ints: number[] = [];
+function getIntervals(notes: Note[]): number[] {
+    const ints: number[] = [];
     ints.push(0);
-    var base = notes[0].number;
-    for (var i = 1; i < notes.length; i++)
-    {
-        var num = notes[i].number;
+    const base = notes[0].number;
+    for (let i = 1; i < notes.length; i++) {
+        let num = notes[i].number;
         if (num < base) num += 12;
         ints.push(num - base);
     }
@@ -73,14 +67,10 @@ function getIntervals(notes: Note[]): number[]
 }
 
 /* Checks to see if two sets of note intervals are the same */
-function compareIntervals(ints1: number[], ints2: number[]): boolean
-{
-    if (ints1.length === ints2.length)
-    {
-        for (var i = 0; i < ints1.length; i++)
-        {
-            if (ints1[i] !== ints2[i])
-            {
+function compareIntervals(ints1: number[], ints2: number[]): boolean {
+    if (ints1.length === ints2.length) {
+        for (let i = 0; i < ints1.length; i++) {
+            if (ints1[i] !== ints2[i]) {
                 return false;
             }
         }
