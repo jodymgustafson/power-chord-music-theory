@@ -1,4 +1,5 @@
 import { MusicScale, parseKey } from "../scales";
+import { Chord, parseChord } from "../chords";
 
 function validateScale(scale: MusicScale, expected: any): void {
     expect(scale.tonic).toBe(expected.tonic);
@@ -97,4 +98,25 @@ describe("When using parseKey", () => {
         notes: ["Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"],
         chords: ["Ebm", "Fdim", "Gb", "Abm", "Bbm", "Cb", "Db"],
         signature: { accidental: "b", count: 6 }}));
+});
+
+describe("When get note in scale", () => {
+    it("should get notes in C#", () => {
+        const scale = new MusicScale("C#");
+        expect(scale.getNoteInScale("C#").name).toBe("C#");
+        expect(scale.getNoteInScale("Db").name).toBe("C#");
+        expect(scale.getNoteInScale("Eb").name).toBe("D#");
+    });
+});
+
+describe("When get chord in scale", () => {
+    it("should get chords in C#", () => {
+        const scale = new MusicScale("C#");
+        expect(scale.getChordInScale(new Chord("C#")).name).toBe("C#");
+        expect(scale.getChordInScale(new Chord("Db")).name).toBe("C#");
+        expect(scale.getChordInScale(parseChord("Eb/Bb")).name).toBe("D#/A#");
+        // These aren't in the scale, so shouldn't change
+        expect(scale.getChordInScale(parseChord("Am/E")).name).toBe("Am/E");
+        expect(scale.getChordInScale(new Chord("B")).name).toBe("B");
+    });
 });

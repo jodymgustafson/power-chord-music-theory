@@ -103,21 +103,26 @@ export class MusicScale
     }
     
     /**
-     * Gets the note name for the note and adjusts the note to the key.
+     * Gets the note adjusted to the key.
      * For example, in the key of C# the Ab note will be adjusted to G#.
-     * @param note A note name
+     * @param note A note in integer notation
      */
     getNoteInScale(noteNumber: number, octave?: number): Note;
     /**
      * Gets the note name for the note and adjusts the note to the key.
      * For example, in the key of C# the Ab note will be adjusted to G#.
-     * @param note A note in integer notation
+     * @param note A note name
      */
     getNoteInScale(noteName: NoteName, octave?: number): Note;
     getNoteInScale(nameOrNumber: NoteName|number, octave?: number): Note {
-        return getNoteInScale(new Note(nameOrNumber as any, octave), this);
+        return getNoteInScale(new Note(nameOrNumber as any, octave), this.tonicNote, this.signature);
     }
 
+    /**
+     * Gets the chord adjusted to the key.
+     * For example, in the key of C# the Ab chord will be adjusted to G#.
+     * @param chord The chord to adjust
+     */
     getChordInScale(chord: Chord): Chord {
         return getChordInScale(chord, this);
     }
@@ -142,8 +147,7 @@ export function parseKey(key: string): MusicScale {
 /**
  * Normalizes a mode name to one of the seven modes 
  */
-export function normalizeMode(mode: ModeName): ModeName
-{
+export function normalizeMode(mode: ModeName): ModeName {
     switch (mode) {
         case "major":
         case "M":
@@ -158,30 +162,31 @@ export function normalizeMode(mode: ModeName): ModeName
 
 /**
  * Gets all of the notes in a scale with the specified root
- * @param tonic Root note
- * @param mode Optional scale mode, default is major
+ * @param scale The scale to get notes for
  */
 function getNotesInScale(scale: MusicScale): Note[] {
-    const ints = scaleIntervals[scale.mode];
+    const intervals = scaleIntervals[scale.mode];
     const tonicNote = new Note(scale.tonic); // don't use scale.tonicNote or it will cause a loop
-    const notes = [tonicNote];
-    const scaleAccidental = scale.signature.accidental;
-    
-    for (let i = 1; i < 7; i++) {
-        let note = tonicNote.transpose(ints[i]);
+    //const scaleAccidental = scale.signature.accidental;
+
+    const notes = intervals.map(i => {
+        // Comnpute the next note from the tonic and interval
+        let note = tonicNote.transpose(i);
         // What should we call it in this scale?
-        if (note.alias && note.accidental !== tonicNote.accidental && note.aliasNote.accidental === scaleAccidental) {
-            note = note.aliasNote;
-        }
-        notes.push(note);
-    }
+        return getNoteInScale(note, tonicNote, scale.signature);
+    });
 
     return notes;
 }
 
-function getNoteInScale(note: Note, scale: MusicScale): Note {
-    if (note.accidental && note.accidental !== scale.signature.accidental) {
-        return note.aliasNote;
+/**
+ * Gets the note with the correct name for the scale
+ * @param note The note to get
+ * @param scale The scale to get the note for
+ */
+function getNoteInScale(note: Note, tonicNote: Note, signature: KeySignature): Note {
+    if (note.alias && note.accidental !== tonicNote.accidental && note.aliasNote.accidental === signature.accidental) {
+        note = note.aliasNote;
     }
     return note;
 }
@@ -190,26 +195,24 @@ function getNoteInScale(note: Note, scale: MusicScale): Note {
 const scaleQualities: (ChordQuality|"")[] = ["", "m", "m", "", "", "m", "dim"];
 
 /** 
- * Gets all of the chords in a key with the specified root
- * @param root  Root note number
- * @param minor (optional) Set to true for minor key
+ * Gets all of the chords in a scale
+ * @param scale The scale to get chords in
  */
-function getChordsInScale(scale: MusicScale): Chord[]
-{
-    let chordsInScale: Chord[] = [];
-    let offset = modes.indexOf(scale.mode);
-    let notesInScale = scale.notes.map(n => getNoteInScale(n, scale));
-    for (var i = 0; i < notesInScale.length; i++)
-    {
-        chordsInScale.push(new Chord(notesInScale[i].name, scaleQualities[(i + offset) % 7] || "M"));
-    }
+function getChordsInScale(scale: MusicScale): Chord[] {
+    const offset = modes.indexOf(scale.mode);
+    
+    const chordsInScale = scale.notes.map((note, i) => {
+        const quality = scaleQualities[(i + offset) % 7] || "M";
+        return new Chord(note.name, quality)
+    });
 
     return chordsInScale;
 }
 
 function getChordInScale(chord: Chord, scale: MusicScale): Chord {
-    if (chord.accidental !== scale.tonicNote.accidental) {
-        return new Chord(chord.rootNote.alias as NoteName, chord.quality, chord.bass);
+    const note = getNoteInScale(chord.rootNote, scale.tonicNote, scale.signature);
+    if (chord.accidental !== note.accidental) {
+        return chord.aliasChord;
     }
     return chord;
 }
@@ -227,7 +230,7 @@ function getSignature(tonic: NoteName, mode: ModeName): KeySignature {
     let accidental = tonic.slice(1) as Accidental;
 
     // Get the index of the tonic without the accidental
-    let tonicIdx = NON_ACCIDENTALS.indexOf(tonic.charAt(0) as NoteName) - 1;
+    const tonicIdx = NON_ACCIDENTALS.indexOf(tonic.charAt(0) as NoteName) - 1;
     const modeIdx = cof.circleModes.indexOf(mode);
 
     // This will be negative for flats, positive for sharps
@@ -248,23 +251,24 @@ function getSignature(tonic: NoteName, mode: ModeName): KeySignature {
 }
 
 //const signatures = ["b", "b", "b", "b", "b", "b", "b", "", "", "", "", "", "", "", "#", "#", "#", "#", "#", "#", "#", "", "", "", "", "", "", ""];
+//const signatures = [-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, ];
 // {
 //     "C": { // 0
-//         "lydian":       ["", "", "", "", "", "", "#"],   [0, 1]
-//         "ionian":       ["", "", "", "", "", "", ""],    [0, 0]
-//         "mixolydian":   ["b", "", "", "", "", "", ""],   [1, 0]
-//         "dorian":       ["b", "b", "", "", "", "", ""],  [2, 0]
-//         "aeolian":      ["b", "b", "b", "", "", "", ""], [3, 0]
-//         "phrygian":     ["b", "b", "b", "b", "", "", ""],[4, 0]
-//         "locrian":      ["b", "b", "b", "b", "b", "", ""],[5, 0]
+//         "lydian":       ["", "", "", "", "", "", "#"],   //1
+//         "ionian":       ["", "", "", "", "", "", ""],    //0
+//         "mixolydian":   ["b", "", "", "", "", "", ""],   //-1
+//         "dorian":       ["b", "b", "", "", "", "", ""],  //-2
+//         "aeolian":      ["b", "b", "b", "", "", "", ""], //-3
+//         "phrygian":     ["b", "b", "b", "b", "", "", ""],//-4
+//         "locrian":      ["b", "b", "b", "b", "b", "", ""],//-5
 //     },
 //     "G": { // 1
-//         "lydian":       ["", "", "", "", "", "#", "#"],  [0, 2]
-//         "ionian":       ["", "", "", "", "", "", "#"],   [0, 1]
-//         "mixolydian":   ["", "", "", "", "", "", ""],    [0, 0]
-//         "dorian":       ["b", "", "", "", "", "", ""],   [1, 0]
-//         "aeolian":      ["b", "b", "", "", "", "", ""],  [2, 0]
-//         "phrygian":     ["b", "b", "b", "", "", "", ""], [3, 0]
-//         "locrian":      ["b", "b", "b", "b", "", "", ""],[4, 0]
+//         "lydian":       ["", "", "", "", "", "#", "#"],  //2
+//         "ionian":       ["", "", "", "", "", "", "#"],   //1
+//         "mixolydian":   ["", "", "", "", "", "", ""],    //0
+//         "dorian":       ["b", "", "", "", "", "", ""],   //-1
+//         "aeolian":      ["b", "b", "", "", "", "", ""],  //-2
+//         "phrygian":     ["b", "b", "b", "", "", "", ""], //-3
+//         "locrian":      ["b", "b", "b", "b", "", "", ""],//-4
 //     },
 // };

@@ -24,20 +24,6 @@ export const chordIntervals = {
     "m9": [0, 3, 7, 10, 14],
 };
 
-const inversionCounts = {
-    "5":    1,
-    "sus2": 1,
-    "aug":  1,
-    "dim7": 1,
-    "sus4": 2,
-    "M":    3,
-    "m":    3,
-    "dim":  3,
-    "7":    4,
-    "M7":   4,
-    "m7":   4
-};
-
 export class Chord
 {
     readonly root: NoteName;
@@ -51,22 +37,41 @@ export class Chord
         this.root = root;
         this.quality = quality || "M";
         this.bass = bass;
+
+        if (!this.bassNote) {
+            throw new Error(`Bass note '${bass}' is not a member of this chord`);
+        }
+
         this.name = root + (quality === "M" ? "" : quality) + (bass !== root ? ("/" + bass) : "")
     }
 
     /**
-     * Returns name with accidentals formatted
+     * Gets the alias of the chord, e.g C# is Db
+     */
+    get aliasChord(): Chord {
+        if (this.rootNote.alias) {
+            const bass = this.root === this.bass ? this.rootNote.alias : (this.bassNote.alias ? this.bassNote.alias : this.bass);
+            return new Chord(this.rootNote.alias, this.quality, bass);
+        }
+        return this;
+    }
+
+    /**
+     * Gets name with accidentals formatted
      */
     get formattedName(): string {
         return formatAccidentals(this.name);
     }
 
+    /**
+     * Gets the notes in the chord
+     */
     get notes(): Note[] {
         return this._notes || (this._notes = getChordNotes(this));
     }
 
     get rootNote(): Note {
-        return this.notes[0];
+        return this.notes.find(n => n.name === this.root);
     }
 
     get bassNote(): Note {
@@ -105,7 +110,7 @@ export class Chord
      * Gets the number of inversions of this chord
      */
     get inversionCount(): number {
-        return inversionCounts[this.quality] || 0;
+        return this.notes.length;
     }
 
     get intervals(): number[] {
@@ -182,7 +187,26 @@ function getChordNotes(chord: Chord): Note[] {
     
     const notes = [root];
     for (let i = 1; i < intervals.length; i++) {
-        notes.push(new Note((root.number + intervals[i]) % 12));
+        let note = new Note((root.number + intervals[i]) % 12);
+        if (note.alias && note.accidental !== chord.accidental && note.aliasNote.accidental === chord.accidental) {
+            note = note.aliasNote;
+        }
+        notes.push(note);
+    }
+
+    if (chord.bass !== chord.root) {
+        // Adjust notes to the inversion specified by the bass note
+        const inversion = notes.findIndex(n => n.name === chord.bass);
+        invertNotes(notes, inversion);
+    }
+
+    return notes;
+}
+
+function invertNotes(notes: Note[], inversion: number): Note[] {
+    // Shift the notes for the number of variation
+    for (let i = 0; i < inversion; i++) {
+        notes.push(notes.shift());
     }
 
     return notes;
