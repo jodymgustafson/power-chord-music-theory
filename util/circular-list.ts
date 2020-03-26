@@ -1,9 +1,12 @@
+/**
+ * Implements a list of items that wraps around so getting an item at a certain index
+ * will wrap around
+ */
 export class CircularList<T>
 {
     private length = 0;
 
-    constructor(private list: T[] = [])
-    {
+    constructor(private list: T[] = []) {
         this.length = this.list.length;
     }
 
@@ -24,8 +27,10 @@ export class CircularList<T>
         return this.list[index];
     }
 
-    getList(): T[]
-    {
+    /**
+     * Gets the list as an array
+     */
+    getList(): T[] {
         return this.list.slice();
     }
 }

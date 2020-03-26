@@ -1,6 +1,6 @@
 {
   "name": "@power-chord/music-theory",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Music theory library",
   "main": "index.js",
   "scripts": {
