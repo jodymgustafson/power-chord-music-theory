@@ -1,4 +1,4 @@
-import { sortNotes, Note, NoteName } from "./notes";
+import Note, { sortNotes, NoteName, getNote } from "./notes";
 import { ChordQuality, Chord, getChordIntervals, chordIntervals } from "./chords";
 
 /** Gets the chord with the specified notes, or undefined if not found */
@@ -8,7 +8,7 @@ export function getChordFromNotes(...notes: Note[]): Chord | undefined;
 export function getChordFromNotes(...notesOrNames: NoteName[] | Note[]): Chord | undefined {
     let notes: Note[];
     if (typeof notesOrNames[0] === "string") {
-        notes = (notesOrNames as NoteName[]).map(n => new Note(n));
+        notes = (notesOrNames as NoteName[]).map(n => getNote(n));
     }
     else {
         notes = (notesOrNames as Note[]).slice();

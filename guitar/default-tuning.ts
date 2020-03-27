@@ -1,15 +1,15 @@
-import { NoteName, Note } from "../notes";
+import { NoteName, getNote } from "../notes";
 import { ChordQuality, Chord } from "../chords";
 import { GuitarLookupService, GuitarChordPositions } from "./guitar-lookup-service";
 
 // Note numbers of open strings in default tuning
 export const DEFAULT_OPEN_NOTES = [
-    new Note("E", 4),
-    new Note("B", 3),
-    new Note("G", 3),
-    new Note("D", 3),
-    new Note("A", 2),
-    new Note("E", 2)
+    getNote("E", 4),
+    getNote("B", 3),
+    getNote("G", 3),
+    getNote("D", 3),
+    getNote("A", 2),
+    getNote("E", 2)
 ];
 
 /**

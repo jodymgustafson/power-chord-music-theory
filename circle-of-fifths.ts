@@ -1,6 +1,6 @@
 import { CircularList } from "./util/circular-list";
 import { normalizeMode, ModeName, MusicScale } from "./scales";
-import { NoteName, Note } from "./notes";
+import Note, { NoteName, getNote } from "./notes";
 
 export type ModeQuality = "M"|"m"|"d";
 export type DegreeNumber = 1|2|3|4|5|6|7;
@@ -18,7 +18,7 @@ export type FifthInfo = {
 /** Tonic names in circle of fisths order beginning with C */
 export const tonicNames = new CircularList<NoteName>(["C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"]);
 /** Tonic notes in circle of fisths order beginning with C */
-export const tonicNotes = tonicNames.getList().map(n => new Note(n));
+export const tonicNotes = tonicNames.getList().map(n => getNote(n));
 /** Mode names in circle of fisths order beginning with lydian */
 export const circleModes: ModeName[] = ["lydian", "ionian", "mixolydian", "dorian", "aeolian", "phrygian", "locrian"];
 /** Name for each note in a scale */

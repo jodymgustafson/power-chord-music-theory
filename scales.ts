@@ -1,4 +1,4 @@
-import { Note, NoteName, Accidental } from "./notes";
+import Note, {  NoteName, Accidental, getNote } from "./notes";
 import { formatAccidentals } from ".";
 import { Chord, ChordQuality } from "./chords";
 import * as cof from "./circle-of-fifths";
@@ -115,7 +115,7 @@ export class MusicScale
      */
     getNoteInScale(noteName: NoteName, octave?: number): Note;
     getNoteInScale(nameOrNumber: NoteName|number, octave?: number): Note {
-        return getNoteInScale(new Note(nameOrNumber as any, octave), this.tonicNote, this.signature);
+        return getNoteInScale(getNote(nameOrNumber as any, octave), this.tonicNote, this.signature);
     }
 
     /**
@@ -167,7 +167,7 @@ export function normalizeMode(mode: ModeName|""): ModeName {
  */
 function getNotesInScale(scale: MusicScale): Note[] {
     const intervals = scaleIntervals[scale.mode];
-    const tonicNote = new Note(scale.tonic); // don't use scale.tonicNote or it will cause a loop
+    const tonicNote = getNote(scale.tonic); // don't use scale.tonicNote or it will cause a loop
     //const scaleAccidental = scale.signature.accidental;
 
     const notes = intervals.map(i => {

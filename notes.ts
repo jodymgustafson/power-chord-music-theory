@@ -36,107 +36,152 @@ const notesByName: {[key: string]: NoteInfo} = {
     "Cb": { name: "Cb", alias: "B", number: 11 },
 };
 
-// computed below
-const notesByNumber: NoteInfo[] = [];
-
-// Static initializer
-(() => {
-    // Compute notesByNumber
-    for (const name of STANDARD_NOTE_NAMES) {
-        notesByNumber.push(notesByName[name as string]);
-    }
-    notesByNumber.sort((a, b) => a.number - b.number);
-})();
-
-export class Note
+/**
+ * Defines a musical note.
+ * Notes can be retrieved by calling getNote().
+ * Notes are immutable and sigletons by name and octave.
+ * To check equality simply use the equality operator.
+ * If you want to check equality without regard to name use the equals() method.
+ */
+export default interface Note
 {
     /** Name of the note */
     readonly name: NoteName;
-    /** Another name for the note, e.g C# is Db */
+    /** Another name for the note or "" is there is none; e.g C# is Db */
     readonly alias: NoteName|"";
     /** Number of the note in integer notation where C=0 and B=11 */
     readonly number: number;
     /** Octave of the note */
     readonly octave: number;
+    /** Note of the alias */
+    readonly aliasNote: Note;
+    /** Returns name with accidentals formatted */
+    readonly formattedName: string;
+    /** Gets the accidental of the note, or empty string */
+    readonly accidental: Accidental;
+    /** Returns true if the note has a flat or sharp accidental */
+    readonly hasAccidental: boolean;
+    /** Returns true if a note has a sharp accidental */
+    readonly isSharp: boolean;
+    /** Returns true if a note has a flat accidental */
+    readonly isFlat: boolean;
+
+    /** 
+     * Gets the note that is this note transposed by the specified amount
+     * @param steps Number of half steps, can be positive or negative
+     */
+    transpose(steps: number): Note;
 
     /**
-     * Creates a note using integer notation
-     * @param number Note number where 0=C. Numbers over 11 and negative numbers will affect the octave
-     * @param octave Optional octave, default is 4
+     * Determines if this note is equal to another note.
+     * Equality is determined by the note number and octave.
+     * E.g. A#4 === Bb4
+     * @param note The note to test
      */
-    constructor(number: number, octave?: number);
-    /**
-     * Creates a note by name
-     * @param name Name of a note
-     * @param octave Optional octave, default is 4
-     */
-    constructor(name: NoteName, octave?: number);
-    constructor(nameOrNumber: NoteName|number, octave = 4) {
-        let noteInfo: NoteInfo;
-        if (typeof nameOrNumber === "string") {
-            noteInfo = notesByName[nameOrNumber];
-            if (!noteInfo) {
-                throw new Error(nameOrNumber + " is not a valid note name");
-            }
-            this.octave = octave;
-        }
-        else if (typeof nameOrNumber === "number"){
-            const num = nameOrNumber < 0 ? 12 + (nameOrNumber % 12) : nameOrNumber;
-            noteInfo = notesByNumber[Math.abs(num % 12)];
-            this.octave =  octave + Math.floor(nameOrNumber / 12);
-        }
-        else {
-            throw new Error("Value must be a string or number");
-        }
+    equals(note: Note): boolean;
 
+    /**
+     * Determines if this note is equal to another note without regard to octave.
+     * Equality is determined by the note number.
+     * E.g. A#5 === Bb4
+     * @param note The note to test
+     */
+    equalsIgnoreOctave(note: Note): boolean;
+}
+
+/**
+ * The implementation of a Note
+ */
+class NoteImpl implements Note
+{
+    readonly name: NoteName;
+    readonly alias: NoteName|"";
+    readonly number: number;
+    readonly octave: number;
+
+    constructor(name: NoteName, octave = 4) {
+        let noteInfo = notesByName[name];
+        if (!noteInfo) {
+            throw new Error(name + " is not a valid note name");
+        }
+        this.octave = octave;
         this.name = noteInfo.name;
         this.number = noteInfo.number;
         this.alias = noteInfo.alias as NoteName;
     }
 
     get aliasNote(): Note {
-        return this.alias ? new Note(this.alias) : this;
+        return this.alias ? getNote(this.alias, this.octave) : this;
     }
 
-    /**
-     * Returns name with accidentals formatted
-     */
     get formattedName(): string {
         return formatAccidentals(this.name);
     }
 
-    /**
-     * Gets the accidental of the note, or empty string
-     */
     get accidental(): Accidental {
         return this.name.charAt(1) as Accidental;
     }
 
-    /**
-     * Returns true if the note has a flat or sharp accidental
-     */
     get hasAccidental(): boolean {
         return this.accidental.length > 0;
     }
 
-    /**
-     * Returns true if a note has a sharp accidental
-     */
     get isSharp(): boolean {
         return this.accidental === "#";
     }
 
-    /**
-     * Returns true if a note has a flat accidental
-     */
     get isFlat(): boolean {
         return this.accidental === "b";
     }
 
-    /** Gets a new note that is this note transposed by the specified amount */
     transpose(steps: number): Note {
-        return new Note(this.number + steps, this.octave);
+        return getNote(this.number + steps, this.octave);
     }
+
+    equals(note: Note): boolean {
+        return this.number === note.number && this.octave === note.octave;
+    }
+
+    equalsIgnoreOctave(note: Note): boolean {
+        return this.number === note.number;
+    }
+}
+
+/** Pool of immutable note instances */
+const notePool: {[key: string]: Note}= {};
+
+/**
+ * Gets a note using integer notation
+ * @param number Note number using integer notation where 0=C. Numbers over 11 and negative numbers will roll over and affect the octave.
+ * @param octave The octave, default is 4
+ */
+export function getNote(number: number, octave?: number): Note;
+/**
+ * Gets a note by name
+ * @param name Note name
+ * @param octave The octave, default is 4
+ */
+export function getNote(name: NoteName, octave?: number): Note;
+export function getNote(nameOrNumber: (NoteName|number), octave = 4): Note {
+    let noteName: NoteName;
+    if (typeof nameOrNumber === "string") {
+        noteName = nameOrNumber;
+    }
+    else if (typeof nameOrNumber === "number") {
+        const num = Math.abs((nameOrNumber < 0 ? 12 + (nameOrNumber % 12) : nameOrNumber) % 12);
+        octave = octave + Math.floor(nameOrNumber / 12);
+        noteName = STANDARD_NOTE_NAMES[num];
+    }
+    else {
+        throw new Error("First parameter must be a note name or number");
+    }
+
+    const key = noteName + octave;
+    let note = notePool[key];
+    if (!note) {
+        notePool[key] = note = new NoteImpl(noteName, octave)
+    }
+    return note;
 }
 
 /**
@@ -147,7 +192,7 @@ export function parseNote(note: string): Note {
     const re = /([A-G][#,b]?)(\d?)/.exec(note);
     if (re && re[1]) {
         const octave = re[2] ? parseInt(re[2], 10) : undefined;
-        return new Note(re[1] as NoteName, octave);
+        return getNote(re[1] as NoteName, octave);
     }
     return undefined;
 }
@@ -161,21 +206,19 @@ export function getNotes(...number: number[]): Note[];
  * Gets one or more notes by name. See parseNote().
  * @param name Note name with optional number for octave, e.g. C#6
  */
-export function getNotes(...name: NoteName[]): Note[];
-export function getNotes(...nameOrNumber: (NoteName|number)[]): Note[] {
-    if (nameOrNumber.length === 0) {
-        return [];
-    }
-
-    if (typeof nameOrNumber[0] === "string") {
-        return (nameOrNumber as NoteName[]).map(n => parseNote(n));
-    }
-    else if (typeof nameOrNumber[0] === "number") {
-        return (nameOrNumber as number[]).map(n => new Note(n));
-    }
-    else {
-        throw new Error("Value must be a string or number");
-    }
+export function getNotes(...name: string[]): Note[];
+export function getNotes(...nameOrNumber: (string|number)[]): Note[] {
+    return nameOrNumber.map(n => {
+        if (typeof n === "string") {
+            return parseNote(n);
+        }
+        else if (typeof n === "number") {
+            return getNote(n);
+        }
+        else {
+            throw new Error("Value must be a string or number");
+        }
+    });
 }
 
 /**

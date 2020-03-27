@@ -1,4 +1,4 @@
-import { NoteName, Note, Accidental } from "./notes";
+import Note, { NoteName, Accidental, getNote } from "./notes";
 import { formatAccidentals } from "./util/format";
 
 /** Supported chord qualities */
@@ -182,12 +182,12 @@ export function getChordIntervals(quality: ChordQuality): number[] {
  * @return Set of notes that make up the chord
  */
 function getChordNotes(chord: Chord): Note[] {
-    const root = new Note(chord.root);
+    const root = getNote(chord.root);
     const intervals = getChordIntervals(chord.quality);
     
     const notes = [root];
     for (let i = 1; i < intervals.length; i++) {
-        let note = new Note((root.number + intervals[i]) % 12);
+        let note = getNote((root.number + intervals[i]) % 12);
         if (note.alias && note.accidental !== chord.accidental && note.aliasNote.accidental === chord.accidental) {
             note = note.aliasNote;
         }

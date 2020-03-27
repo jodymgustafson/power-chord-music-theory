@@ -1,4 +1,4 @@
-import { Note, NoteName } from "../notes";
+import Note, { NoteName } from "../notes";
 import { ChordQuality } from "../chords";
 
 export type GuitarChordPositions = { [key: string]: number[][] };
