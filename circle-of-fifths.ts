@@ -15,8 +15,10 @@ export type FifthInfo = {
     degreeRoman: string
 }
 
-/** Tonic names in circle of fisths order beginning with lydian */
+/** Tonic names in circle of fisths order beginning with C */
 export const tonicNames = new CircularList<NoteName>(["C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"]);
+/** Tonic notes in circle of fisths order beginning with C */
+export const tonicNotes = tonicNames.getList().map(n => new Note(n));
 /** Mode names in circle of fisths order beginning with lydian */
 export const circleModes: ModeName[] = ["lydian", "ionian", "mixolydian", "dorian", "aeolian", "phrygian", "locrian"];
 /** Name for each note in a scale */
@@ -59,19 +61,23 @@ export class CircleOfFifths
     }
 }
 
+/**
+ * Sorts fifths into natural order by note
+ * @param fifths 
+ */
 function sortFifths(fifths: FifthInfo[]): FifthInfo[] {
     return fifths.sort((a, b) => a.degreeNumber - b.degreeNumber);
 }
 
 /** Gets all of the fifths for a tonic and mode in display order on the circle */
 function getFifths(scale: MusicScale): FifthInfo[] {
-    const tonicNumber = getTonicNumber(scale.tonic);
+    const tonicIndex = getTonicIndex(scale.tonicNote);
     const modeNumber = getModeNumber(scale.mode);
     const start = -1 * modeNumber;
 
     const fifths: FifthInfo[] = [];
     for (let i = 0; i < 7; i++) {
-        fifths.push(getFifthInfo(i, tonicNumber, start, scale));
+        fifths.push(getFifthInfo(i, tonicIndex, start, scale));
     }
 
     return fifths;
@@ -111,9 +117,9 @@ function getDegreeRomanNumeral(degree: DegreeNumber, quality: ModeQuality): stri
            roman;
 }
 
-/** Gets the number of the tonic in the circle where C == 0, G == 1, etc */
-function getTonicNumber(tonic: NoteName) {
-    return tonicNames.indexOf(normalizeTonic(tonic));
+/** Gets the index of the tonic in the circle where C == 0, G == 1, etc */
+function getTonicIndex(tonic: Note): number {
+    return tonicNotes.findIndex(n => n.number === tonic.number);
 }
 
 /**

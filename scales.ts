@@ -147,8 +147,9 @@ export function parseKey(key: string): MusicScale {
 /**
  * Normalizes a mode name to one of the seven modes 
  */
-export function normalizeMode(mode: ModeName): ModeName {
+export function normalizeMode(mode: ModeName|""): ModeName {
     switch (mode) {
+        case "":
         case "major":
         case "M":
             return "ionian";
