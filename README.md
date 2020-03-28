@@ -69,6 +69,15 @@ Therefore to check if two notes have the same name and octave simply use the equ
     - `getNextChords()` Gets the list of suggested chords that could follow a chord
     - `getChordNumber()` Gets the chord number in the current key where the tonic is 0
 
+## Guitar Lookup Service
+- The guitar lookup service is used to look up notes on a guitar and get finger positions for chords
+- There is one implementation for standard tuning of E-A-D-G-B-E, which you can get by calling the `getDefaultTuningGuitarLookup()` function
+- Methods
+    - `getNote()` Gets the note at a fret and string position
+    - `getChordTabs()` Gets the finger positions for each variation that match the chord root and quality
+    - `getChordTab()` Gets the finger positions that match the chord root and quality and variation
+    - `getChordVariationCount()` Gets the number of variations for a chord
+
 ## Build Process
 Follow these steps to build the package.
 

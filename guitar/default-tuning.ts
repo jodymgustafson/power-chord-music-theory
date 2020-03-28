@@ -1,6 +1,6 @@
 import { NoteName, getNote } from "../notes";
 import { ChordQuality, Chord, getChord } from "../chords";
-import { GuitarLookupService, GuitarChordPositions } from "./guitar-lookup-service";
+import { GuitarLookupService, GuitarChordPositions, GuitarLookupServiceImpl } from "./guitar-lookup-service";
 
 // Note numbers of open strings in default tuning
 export const DEFAULT_OPEN_NOTES = [
@@ -160,4 +160,4 @@ function getMinFret(chord: number[]): number
 // This contains a list of every chord mapped to finger positions
 const chordPositions = buildGuitarChords();
 
-const defaultTuningGuitarLookup = new GuitarLookupService(chordPositions, DEFAULT_OPEN_NOTES); 
+const defaultTuningGuitarLookup = new GuitarLookupServiceImpl(chordPositions, DEFAULT_OPEN_NOTES); 

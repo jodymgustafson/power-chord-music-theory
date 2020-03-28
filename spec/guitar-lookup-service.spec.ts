@@ -49,5 +49,5 @@ describe("When getChordVariationCount", () => {
     it("should get count for C m7", () => expect(lookup.getChordVariationCount("C", "m7")).toBe(3));
     it("should get count for C dim", () => expect(lookup.getChordVariationCount("C", "dim")).toBe(1));
     it("should get count for C sus4", () => expect(lookup.getChordVariationCount("C", "sus4")).toBe(1));
-    it("should get 0 for invalid", () => expect(lookup.getChordVariationCount("H", "")).toBe(0));
+    it("should get 0 for invalid", () => expect(lookup.getChordVariationCount("A", "aug")).toBe(0));
 });
