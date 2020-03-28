@@ -1,6 +1,6 @@
 import Note, {  NoteName, Accidental, getNote } from "./notes";
 import { formatAccidentals } from ".";
-import { Chord, ChordQuality } from "./chords";
+import { Chord, ChordQuality, getChord } from "./chords";
 import * as cof from "./circle-of-fifths";
 
 export type ModeName = "lydian"|"M"|"major"|"ionian"|"mixolydian"|"dorian"|"m"|"minor"|"aeolian"|"phrygian"|"locrian";
@@ -186,14 +186,14 @@ function getChordsInScale(scale: MusicScale): Chord[] {
 
     const chordsInScale = scale.notes.map((note, i) => {
         const quality = scaleQualities[(i + offset) % 7] || "M";
-        return new Chord(note.name, quality)
+        return getChord(note.name, quality)
     });
 
     return chordsInScale;
 }
 
 function getChordInScale(chord: Chord, scale: MusicScale): Chord {
-    const note = getNoteInScale(chord.rootNote, scale.tonicNote, scale.signature);
+    const note = getNoteInScale(chord.root, scale.tonicNote, scale.signature);
     if (chord.accidental !== note.accidental) {
         return chord.aliasChord;
     }

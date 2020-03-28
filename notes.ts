@@ -87,6 +87,8 @@ export default interface Note
      * @param note The note to test
      */
     equalsIgnoreOctave(note: Note): boolean;
+
+    toString(): string;
 }
 
 /**

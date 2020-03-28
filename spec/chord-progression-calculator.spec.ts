@@ -1,5 +1,5 @@
 import { ChordProgressionCalculator } from "../chord-progression-calculator";
-import { Chord, parseChord } from "../chords";
+import { Chord, parseChord, getChord } from "../chords";
 import { parseScale } from "../scales";
 
 describe("When get chord progressions in GM", () => {
@@ -17,7 +17,7 @@ describe("When get chord progressions in GM", () => {
         expect(calc.getChordAt(6).name).toBe("F#dim");
     });
     it("should get chords after G", () => {
-        expect(calc.getNextChords(new Chord("G")).map(c => c.name)).toEqual(["G", "Am", "Bm", "C", "D", "Em", "F#dim"]);
+        expect(calc.getNextChords(getChord("G")).map(c => c.name)).toEqual(["G", "Am", "Bm", "C", "D", "Em", "F#dim"]);
     });
     it("should get chords after Am", () => {
         expect(calc.getNextChords(parseChord("Am")).map(c => c.name)).toEqual(["G", "Am", "D", "F#dim"]);

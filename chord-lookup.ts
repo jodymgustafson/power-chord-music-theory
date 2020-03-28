@@ -1,5 +1,5 @@
 import Note, { sortNotes, NoteName, getNote } from "./notes";
-import { ChordQuality, Chord, getChordIntervals, CHORD_INTERVALS } from "./chords";
+import { ChordQuality, Chord, getChordIntervals, CHORD_INTERVALS, getChord } from "./chords";
 
 /** Gets the chord with the specified notes, or undefined if not found */
 export function getChordFromNotes(...notes: NoteName[]): Chord | undefined;
@@ -25,7 +25,7 @@ export function getChordFromNotes(...notesOrNames: NoteName[] | Note[]): Chord |
         const quality = lookupQualityByIntervals(ints);
         if (quality !== undefined) {
             // found it
-            return new Chord(notes[0].name, quality, bass);
+            return getChord(notes[0], quality, bass);
         }
         else {
             // try next

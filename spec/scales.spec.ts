@@ -1,5 +1,5 @@
 import { MusicScale, parseScale } from "../scales";
-import { Chord, parseChord } from "../chords";
+import { Chord, parseChord, getChord } from "../chords";
 
 function validateScale(scale: MusicScale, expected: any): void {
     expect(scale.tonic).toBe(expected.tonic);
@@ -112,11 +112,11 @@ describe("When get note in scale", () => {
 describe("When get chord in scale", () => {
     it("should get chords in C#", () => {
         const scale = new MusicScale("C#");
-        expect(scale.getChordInScale(new Chord("C#")).name).toBe("C#");
-        expect(scale.getChordInScale(new Chord("Db")).name).toBe("C#");
+        expect(scale.getChordInScale(getChord("C#")).name).toBe("C#");
+        expect(scale.getChordInScale(getChord("Db")).name).toBe("C#");
         expect(scale.getChordInScale(parseChord("Eb/Bb")).name).toBe("D#/A#");
         // These aren't in the scale, so shouldn't change
         expect(scale.getChordInScale(parseChord("Am/E")).name).toBe("Am/E");
-        expect(scale.getChordInScale(new Chord("B")).name).toBe("B");
+        expect(scale.getChordInScale(getChord("B")).name).toBe("B");
     });
 });

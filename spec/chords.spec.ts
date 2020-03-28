@@ -1,10 +1,10 @@
-import { parseChord, Chord } from "../chords";
-import { getNoteNames } from "../notes";
+import { parseChord, Chord, getChord } from "../chords";
+import { getNoteNames, getNote } from "../notes";
 
 function validateParseChord(c: Chord, expected: any): void {
-    expect(c.root).toBe(expected.root);
+    expect(c.root.name).toBe(expected.root);
     expect(c.quality).toBe(expected.quality);
-    expect(c.bass).toBe(expected.bass);
+    expect(c.bass.name).toBe(expected.bass);
     expect(c.name).toBe(expected.name);
     expect(c.aliasChord.name).toBe(expected.alias);
     expect(c.inversionCount).toBe(expected.inversionCount);
@@ -13,8 +13,8 @@ function validateParseChord(c: Chord, expected: any): void {
 }
 
 describe("When parse chords", () => {
-    it("should get chord C using new", () => {
-        validateParseChord(new Chord("C"), { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7], notes: ["C", "E", "G"], alias: "B#" });
+    it("should get chord C using getChord", () => {
+        validateParseChord(getChord("C"), { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7], notes: ["C", "E", "G"], alias: "B#" });
     });
     it("should get chord C", () => {
         validateParseChord(parseChord("C"), { root: "C", quality: "M", name: "C", bass: "C", inversionCount: 3, intervals: [0, 4, 7], notes: ["C", "E", "G"], alias: "B#" });
@@ -62,19 +62,16 @@ describe("When parse chords", () => {
     });
 });
 
-describe("When get chord notes", () => {
+describe("When get chord inversions", () => {
     const c = parseChord("C");
     it("should get C", () => {
-        expect(c.notes.map(n => n.name)).toEqual(["C", "E", "G"]);
-    });
-    it("should get C/C", () => {
-        expect(c.notes.map(n => n.name)).toEqual(["C", "E", "G"]);
+        expect(getNoteNames(c.notes)).toEqual(["C", "E", "G"]);
     });
     it("should get C/E", () => {
-        expect(c.getInversion(1).map(n => n.name)).toEqual(["E", "G", "C"]);
+        expect(getNoteNames(c.getInversion(1))).toEqual(["E", "G", "C"]);
     });
     it("should get C/G", () => {
-        expect(c.getInversion(2).map(n => n.name)).toEqual(["G", "C", "E"]);
+        expect(getNoteNames(c.getInversion(2))).toEqual(["G", "C", "E"]);
     });
     it("should get F#sus4", () => {
         expect(parseChord("F#sus4").notes.map(n => n.name)).toEqual(["F#", "B", "C#"]);

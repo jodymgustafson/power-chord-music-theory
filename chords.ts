@@ -4,6 +4,7 @@ import { chords } from ".";
 
 /** Supported chord qualities */
 export type ChordQuality = "M"|"m"|"7"|"M7"|"m7"|"dim"|"dim7"|"sus4"|"sus2"|"aug"|"5"|"M6"|"m6"|"add2"|"9"|"M9"|"m9";
+export type NoteOrName = Note|NoteName;
 
 export const CHORD_INTERVALS = {
     "M": [0, 4, 7],
@@ -25,34 +26,91 @@ export const CHORD_INTERVALS = {
     "m9": [0, 3, 7, 10, 14],
 };
 
-export class Chord
+export interface Chord
 {
-    readonly root: NoteName;
+    /** Gets the root note of the chord */
+    readonly root: Note;
+    /** Gets the qualit of the chord */
     readonly quality: ChordQuality;
-    readonly bass: NoteName;
+    /** Gets the bass note of the chord */
+    readonly bass: Note;
+    /** Gets the name of the chord, e.g. C#m/G# */
+    readonly name: string;
+    /** Gets the alias of the chord or "" is there is none, e.g C# is Db */
+    readonly aliasChord: Chord;
+    /** Gets name with accidentals formatted */
+    readonly formattedName: string;
+    /** Gets the notes in the chord */
+    readonly notes: Note[];
+    /** Gets the accidental of the chord, or empty string */
+    readonly accidental: Accidental;
+    /** Returns true if the chord has a flat or sharp accidental */
+    readonly hasAccidental: boolean;
+    /** Returns true if a chord has a sharp accidental */
+    readonly isSharp: boolean;
+    /** Returns true if a chord has a flat accidental */
+    readonly isFlat: boolean;
+    /** Gets the number of inversions of this chord */
+    readonly inversionCount: number;
+    /** Gets the intervals for this chord */
+    readonly intervals: number[];
+    /** Used to determine if the root is not the bass */
+    readonly isInverted: boolean;
+
+    /**
+     * Gets the notes for the specified inversion,
+     * e.g. C-0(CEG), C-1(EGC), C-2(GCE)
+     * @param inversion Inversion number
+     */
+    getInversion(inversion: number): Note[];
+
+    /**
+     * Gets the chord that is the specified number of half steps from this one
+     * @param steps 
+     */
+    transpose(steps: number): Chord;
+
+    toString(): string;
+
+    /**
+     * Determines equality by checking if two chords have the same root, quality and bass
+     * @param chord The chord to check
+     */
+    equals(chord: Chord): boolean;
+}
+
+export class ChordImpl implements Chord
+{
+    readonly root: Note;
+    readonly quality: ChordQuality;
+    readonly bass: Note;
     readonly name: string;
 
     private _notes: Note[];
 
-    constructor(root: NoteName, quality: ChordQuality = "M", bass: NoteName = root) {
+    get isInverted(): boolean {
+        return !this.root.equalsIgnoreOctave(this.bass);
+    }
+
+    constructor(root: Note, quality: ChordQuality = "M", bass: Note = root) {
         this.root = root;
         this.quality = quality || "M";
         this.bass = bass;
 
-        if (!this.bassNote) {
-            throw new Error(`Bass note '${bass}' is not a member of this chord`);
+        if (this.isInverted && this.notes.indexOf(bass) < 0) {
+            throw new Error(`Bass note '${bass.name}' is not a member of this chord`);
         }
 
-        this.name = root + (quality === "M" ? "" : quality) + (bass !== root ? ("/" + bass) : "")
+        this.name = root.name + (quality === "M" ? "" : quality) + (this.isInverted ? ("/" + bass.name) : "")
     }
 
     /**
      * Gets the alias of the chord, e.g C# is Db
      */
     get aliasChord(): Chord {
-        if (this.rootNote.alias) {
-            const bass = this.root === this.bass ? this.rootNote.alias : (this.bassNote.alias ? this.bassNote.alias : this.bass);
-            return new Chord(this.rootNote.alias, this.quality, bass);
+        if (this.root.alias) {
+            const bass = this.isInverted ? (this.bass.alias ? this.bass.alias : this.bass) : this.root.alias;
+            return getChord(this.root.alias, this.quality, bass);
         }
         return this;
     }
@@ -71,19 +129,11 @@ export class Chord
         return this._notes || (this._notes = getChordNotes(this));
     }
 
-    get rootNote(): Note {
-        return this.notes.find(n => n.name === this.root);
-    }
-
-    get bassNote(): Note {
-        return this.notes.find(n => n.name == this.bass);
-    }
-
     /**
      * Gets the accidental of the chord, or empty string
      */
     get accidental(): Accidental {
-        return this.root.charAt(1) as Accidental;
+        return this.root.accidental;
     }
 
     /**
@@ -140,7 +190,7 @@ export class Chord
      * @param steps 
      */
     transpose(steps: number): Chord {
-        return new Chord(this.rootNote.transpose(steps).name, this.quality, this.bassNote.transpose(steps).name);
+        return getChord(this.root.transpose(steps), this.quality, this.bass.transpose(steps));
     }
 
     toString(): string {
@@ -157,17 +207,47 @@ export class Chord
 }
 
 /**
- * Parses a chord name into a Chord object,or undefined if not valid
+ * Gets an instance of a chord
+ * @param root Name of the root note
+ * @param quality Chord quality
+ * @param bass An optional bass note to create an inverted chord
+ */
+export function getChord(root: NoteName, quality?: ChordQuality, bass?: NoteOrName): Chord;
+/**
+ * Gets an instance of a chord
+ * @param root Root note
+ * @param quality Chord quality
+ * @param bass An optional bass note to create an inverted chord
+ */
+export function getChord(root: Note, quality?: ChordQuality, bass?:NoteOrName): Chord;
+export function getChord(root: NoteName|Note, quality: ChordQuality = "M", bass?: NoteOrName): Chord {
+    if (typeof root === "string") {
+        root = getNote(root);
+    }
+    if (typeof bass === "string") {
+        bass = getNote(bass);
+    }
+
+    return new ChordImpl(root, quality, bass);
+}
+
+/**
+ * Parses a chord name into a Chord object, or undefined if not valid.
+ * E.g. C#sus4/G#
+ * @param chord Chord name which contains a root note and optionally a quality and bass note
  */
 export function parseChord(chord: string): Chord {
     const parts = /([A-G][#,b]?)([a-zA-Z]*\d?)?(\/[A-G][#,b]?)?/.exec(chord);
     if (parts && parts[1]) {
         const root = parts[1] as NoteName;
+        
         // Default quality is Major
         const quality = (parts[2] || "M") as ChordQuality;
+        
         // Slice to remove the slash
         const bass = (parts[3] ? parts[3].slice(1) : root) as NoteName;
-        return new Chord(root, quality, bass);
+
+        return getChord(root, quality, bass);
     }
     return undefined;
 }
@@ -191,7 +271,7 @@ export function getChordIntervals(quality: ChordQuality): number[] {
  * @return Set of notes that make up the chord
  */
 function getChordNotes(chord: Chord): Note[] {
-    const root = getNote(chord.root);
+    const root = chord.root;
     const intervals = getChordIntervals(chord.quality);
     
     const notes = [root];
@@ -205,7 +285,7 @@ function getChordNotes(chord: Chord): Note[] {
 
     if (chord.bass !== chord.root) {
         // Adjust notes to the inversion specified by the bass note
-        const inversion = notes.findIndex(n => n.name === chord.bass);
+        const inversion = notes.findIndex(n => n.equalsIgnoreOctave(chord.bass));
         invertNotes(notes, inversion);
     }
 

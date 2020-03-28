@@ -1,5 +1,5 @@
 import { NoteName, getNote } from "../notes";
-import { ChordQuality, Chord } from "../chords";
+import { ChordQuality, Chord, getChord } from "../chords";
 import { GuitarLookupService, GuitarChordPositions } from "./guitar-lookup-service";
 
 // Note numbers of open strings in default tuning
@@ -92,7 +92,7 @@ function buildGuitarChords(): GuitarChordPositions {
         const qualities = barrePositions[rootName];
         for (const quality in qualities) {
             const positions = qualities[quality];
-            const barreChord = new Chord(rootName as NoteName, quality as ChordQuality);
+            const barreChord = getChord(rootName as NoteName, quality as ChordQuality);
             addBarreChordPositions(allPositions, barreChord, positions);
         }
     }
