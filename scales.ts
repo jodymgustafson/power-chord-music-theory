@@ -1,6 +1,6 @@
-import Note, {  NoteName, Accidental, getNote } from "./notes";
+import Note, {  NoteName, Accidental, getNote, getNoteNames } from "./notes";
 import { formatAccidentals } from ".";
-import { Chord, ChordQuality, getChord } from "./chords";
+import { Chord, ChordQuality, getChord, NoteOrName } from "./chords";
 import * as cof from "./circle-of-fifths";
 
 export type ModeName = "lydian"|"M"|"major"|"ionian"|"mixolydian"|"dorian"|"m"|"minor"|"aeolian"|"phrygian"|"locrian";
@@ -23,9 +23,62 @@ const SCALE_INTERVALS: {[key: string]: number[]} = {
     locrian:    [ 0, 1, 3, 5, 6, 8, 10 ]  // [2, 1, 2, 2, 1, 2, 2]
 };
 
-export class MusicScale
+
+export interface MusicScale
 {
-    readonly tonic: NoteName;
+    /** The tonic note of the scale */
+    readonly tonic: Note;
+    /** The mode of the scale */
+    readonly mode: ModeName;
+    /** Gets the name of the scale */
+    readonly name: string;
+    /** Gets name with accidentals formatted */
+    readonly formattedName: string;
+    /** Gets another name for the mode, of "" if there is none (e.g. ionian => major, aeolian => minor) */
+    readonly modeAlias: ModeName|"";
+    /** Gets signature information */
+    readonly signature: KeySignature;
+    /** Gets the notes in the scale */
+    readonly notes: Note[];
+    /** Gets the list of chords in the scale */
+    readonly chords: Chord[];
+    /** Returns true if the note has a flat or sharp accidental */
+    readonly hasAccidental: boolean;
+    /** Returns true if a note has a sharp accidental */
+    readonly isSharp: boolean;
+    /** Returns true if a note has a flat accidental */
+    readonly isFlat: boolean;
+
+    /**
+     * Gets the note adjusted to the scale.
+     * For example, in the key of C# the Ab note will be adjusted to G#.
+     * @param note A note
+     */
+    getNoteInScale(note: Note): Note;
+
+    /**
+     * Gets the note adjusted to the scale.
+     * For example, in the key of C# the Ab note will be adjusted to G#.
+     * @param noteName A note name
+     */
+    getNoteInScale(noteName: NoteName): Note;
+
+    /**
+     * Gets the chord adjusted to the scale.
+     * For example, in the key of C# the Ab chord will be adjusted to G#.
+     * @param chord The chord to adjust
+     */
+    getChordInScale(chord: Chord): Chord;
+
+    equals(scale: MusicScaleImpl): boolean;
+
+    toString(): string;
+}
+
+
+export class MusicScaleImpl implements MusicScale
+{
+    readonly tonic: Note;
     readonly mode: ModeName;
     readonly name: string;
     readonly modeAlias: ModeName|"";
@@ -33,10 +86,10 @@ export class MusicScale
     private _chords: Chord[];
     private _signature: KeySignature;
 
-    constructor(tonic: NoteName, mode: ModeName = "major") {
+    constructor(tonic: Note, mode: ModeName = "major") {
         this.tonic = tonic;
         this.mode = normalizeMode(mode);
-        this.name = tonic + (this.mode === "ionian" ? "M" : this.mode === "aeolian" ? "m" : `(${this.mode.slice(0,3)})`);
+        this.name = tonic.name + (this.mode === "ionian" ? "M" : this.mode === "aeolian" ? "m" : `(${this.mode.slice(0,3)})`);
         this.modeAlias = this.mode === "ionian" ? "major" : this.mode === "aeolian" ? "minor" : "";
     }
 
@@ -55,10 +108,6 @@ export class MusicScale
         return this._notes || (this._notes = getNotesInScale(this))
     }
 
-    get tonicNote(): Note {
-        return this.notes[0];
-    }
-
     get chords(): Chord[] {
         return this._chords || (this._chords = getChordsInScale(this));
     }
@@ -67,37 +116,27 @@ export class MusicScale
      * Returns true if the note has a flat or sharp accidental
      */
     get hasAccidental(): boolean {
-        return this.tonic.length > 1;
+        return this.tonic.hasAccidental;
     }
 
     /**
      * Returns true if a note has a sharp accidental
      */
     get isSharp(): boolean {
-        return this.tonicNote.isSharp
+        return this.tonic.isSharp
     }
 
-    /**
-     * Returns true if a note has a flat accidental
-     */
     get isFlat(): boolean {
-        return this.tonicNote.isFlat
+        return this.tonic.isFlat
     }
 
-    /**
-     * Gets the note adjusted to the scale.
-     * For example, in the key of C# the Ab note will be adjusted to G#.
-     * @param note A note in integer notation
-     */
-    getNoteInScale(noteNumber: number, octave?: number): Note;
-    /**
-     * Gets the note name for the note and adjusts the note to the scale.
-     * For example, in the key of C# the Ab note will be adjusted to G#.
-     * @param note A note name
-     */
-    getNoteInScale(noteName: NoteName, octave?: number): Note;
-    getNoteInScale(nameOrNumber: NoteName|number, octave?: number): Note {
-        return getNoteInScale(getNote(nameOrNumber as any, octave), this.tonicNote, this.signature);
+    getNoteInScale(note: Note): Note;
+    getNoteInScale(noteName: NoteName): Note;
+    getNoteInScale(note: NoteOrName): Note {
+        if (typeof note === "string") {
+            note = getNote(note);
+        }
+        return getNoteInScale(note, this.tonic, this.signature);
     }
 
     /**
@@ -112,6 +151,30 @@ export class MusicScale
     toString() {
         return this.name;
     }
+
+    equals(scale: MusicScaleImpl): boolean {
+        return this.name === scale.name;
+    }
+}
+
+/**
+ * Gets an instance of a scale
+ * @param tonic Name of the tonic note
+ * @param mode Mode for the scale
+ */
+export function getScale(tonic: NoteName, mode?: ModeName): MusicScale;
+/**
+ * Gets an instance of a scale
+ * @param tonic The tonic note
+ * @param mode Mode for the scale
+ */
+export function getScale(tonic: Note, mode?: ModeName): MusicScale;
+export function getScale(tonic: NoteOrName, mode: ModeName = "major"): MusicScale {
+    if (typeof tonic === "string") {
+        tonic = getNote(tonic);
+    }
+
+    return new MusicScaleImpl(tonic, mode);
 }
 
 /**
@@ -121,7 +184,7 @@ export class MusicScale
 export function parseScale(scale: string): MusicScale {
     const re = /([A-G]{1}[#|b]?)([m,M]?)/.exec(scale);
     if (re && re[1]) {
-        return new MusicScale(re[1] as NoteName, re[2] === "m" ? "minor" : "major")
+        return getScale(re[1] as NoteName, re[2] === "m" ? "minor" : "major")
     }
     return undefined;
 }
@@ -150,7 +213,7 @@ export function normalizeMode(mode: ModeName|""): ModeName {
  */
 function getNotesInScale(scale: MusicScale): Note[] {
     const intervals = SCALE_INTERVALS[scale.mode];
-    const tonicNote = getNote(scale.tonic); // don't use scale.tonicNote or it will cause a loop
+    const tonicNote = scale.tonic;
 
     const notes = intervals.map(i => {
         // Comnpute the next note from the tonic and interval
@@ -193,7 +256,7 @@ function getChordsInScale(scale: MusicScale): Chord[] {
 }
 
 function getChordInScale(chord: Chord, scale: MusicScale): Chord {
-    const note = getNoteInScale(chord.root, scale.tonicNote, scale.signature);
+    const note = getNoteInScale(chord.root, scale.tonic, scale.signature);
     if (chord.accidental !== note.accidental) {
         return chord.aliasChord;
     }
@@ -206,14 +269,14 @@ const NON_ACCIDENTALS = ["F", "C", "G", "D", "A", "E", "B"];
 /**
  * Gets the key signature for a scale
  */
-function getSignature(tonic: NoteName, mode: ModeName): KeySignature {
+function getSignature(tonic: Note, mode: ModeName): KeySignature {
     // A tonic with an accidental will have the inverse number of accidentals as
     // the same tonic without the accidental.
     // E.g. F has 1 flat, F# has 6 sharps, Fb has 6 flats; 7-6=1, 7-1=6
-    let accidental = tonic.slice(1) as Accidental;
+    let accidental = tonic.accidental
 
     // Get the index of the tonic without the accidental
-    const tonicIdx = NON_ACCIDENTALS.indexOf(tonic.charAt(0) as NoteName) - 1;
+    const tonicIdx = NON_ACCIDENTALS.indexOf(tonic.name.charAt(0) as NoteName) - 1;
     const modeIdx = cof.circleModes.indexOf(mode);
 
     // This will be negative for flats, positive for sharps

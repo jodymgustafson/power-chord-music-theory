@@ -191,7 +191,7 @@ export function getChord(root: NoteName, quality?: ChordQuality, bass?: NoteOrNa
  * @param bass An optional bass note to create an inverted chord
  */
 export function getChord(root: Note, quality?: ChordQuality, bass?:NoteOrName): Chord;
-export function getChord(root: NoteName|Note, quality: ChordQuality = "M", bass?: NoteOrName): Chord {
+export function getChord(root: NoteOrName, quality: ChordQuality = "M", bass?: NoteOrName): Chord {
     if (typeof root === "string") {
         root = getNote(root);
     }

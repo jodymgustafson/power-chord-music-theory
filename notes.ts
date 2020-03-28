@@ -247,7 +247,7 @@ export function sortNotes(notes: Note[], root = notes[0]): Note[]
 /**
  * Extracts an array of names from an array of notes
  */
-export function getNoteNames(notes: Note[]): string[] {
+export function getNoteNames(notes: Note[]): NoteName[] {
     return notes.map(n => n.name);
 }
 

@@ -1,6 +1,6 @@
 import { CircularList } from "./util/circular-list";
 import { normalizeMode, ModeName, MusicScale } from "./scales";
-import Note, { NoteName, getNote } from "./notes";
+import Note, { NoteName, getNote, getNotes, getNoteNames } from "./notes";
 
 export type ModeQuality = "M"|"m"|"d";
 export type DegreeNumber = 1|2|3|4|5|6|7;
@@ -16,9 +16,9 @@ export type FifthInfo = {
 }
 
 /** Tonic names in circle of fisths order beginning with C */
-export const tonicNames = new CircularList<NoteName>(["C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"]);
+export const tonicNotes = new CircularList<Note>(getNotes("C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"));
 /** Tonic notes in circle of fisths order beginning with C */
-export const tonicNotes = tonicNames.getList().map(n => getNote(n));
+export const tonicNames = new CircularList<NoteName>(getNoteNames(tonicNotes.getList()));
 /** Mode names in circle of fisths order beginning with lydian */
 export const circleModes: ModeName[] = ["lydian", "ionian", "mixolydian", "dorian", "aeolian", "phrygian", "locrian"];
 /** Name for each note in a scale */
@@ -71,7 +71,7 @@ function sortFifths(fifths: FifthInfo[]): FifthInfo[] {
 
 /** Gets all of the fifths for a tonic and mode in display order on the circle */
 function getFifths(scale: MusicScale): FifthInfo[] {
-    const tonicIndex = getTonicIndex(scale.tonicNote);
+    const tonicIndex = getTonicIndex(scale.tonic);
     const modeNumber = getModeNumber(scale.mode);
     const start = -1 * modeNumber;
 
@@ -89,7 +89,7 @@ function getFifthInfo(index: number, tonicNumber: number, start: number, scale: 
     const quality = modeQualities.itemAt(index);
 
     const info = {
-        note: scale.getNoteInScale(tonicNames.itemAt(position)),
+        note: scale.getNoteInScale(tonicNotes.itemAt(position)),
         position: position,
         quality: quality,
         degreeNumber: degreeNumber,

@@ -18,6 +18,10 @@ export class CircularList<T>
         return this.list.indexOf(item);
     }
 
+    findIndex(predicate: (value: T, index: number, obj: T[]) => boolean): number {
+        return this.list.findIndex(predicate)
+    }
+
     itemAt(index: number): T {
         index %= this.length;
         if (index < 0) {
