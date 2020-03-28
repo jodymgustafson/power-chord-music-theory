@@ -58,11 +58,11 @@ export interface Chord
     readonly isInverted: boolean;
 
     /**
-     * Gets the notes for the specified inversion,
+     * Gets the chord for the specified inversion,
      * e.g. C-0(CEG), C-1(EGC), C-2(GCE)
      * @param inversion Inversion number
      */
-    getInversion(inversion: number): Note[];
+    getInversion(inversion: number): Chord;
 
     /**
      * Gets the chord that is the specified number of half steps from this one
@@ -77,6 +77,19 @@ export interface Chord
      * @param chord The chord to check
      */
     equals(chord: Chord): boolean;
+
+    /**
+     * Determines equality by checking if two chords have the same root and quality
+     * @param chord The chord to check
+     */
+    equalsIgnoreBass(chord: Chord): boolean;
+
+    /**
+     * Determines if two chords are the same in regards to pitch.
+     * E.g. C#M/G# and DbM/Ab are the same
+     * @param chord The chord to check
+     */
+    isSameAs(chord: Chord): boolean;
 }
 
 export class ChordImpl implements Chord
@@ -103,10 +116,6 @@ export class ChordImpl implements Chord
 
         this.name = root.name + (quality === "M" ? "" : quality) + (this.isInverted ? ("/" + bass.name) : "")
     }
-
-    /**
-     * Gets the alias of the chord, e.g C# is Db
-     */
     get aliasChord(): Chord {
         if (this.root.alias) {
             const bass = this.isInverted ? (this.bass.alias ? this.bass.alias : this.bass) : this.root.alias;
@@ -114,52 +123,24 @@ export class ChordImpl implements Chord
         }
         return this;
     }
-
-    /**
-     * Gets name with accidentals formatted
-     */
     get formattedName(): string {
         return formatAccidentals(this.name);
     }
-
-    /**
-     * Gets the notes in the chord
-     */
     get notes(): Note[] {
         return this._notes || (this._notes = getChordNotes(this));
     }
-
-    /**
-     * Gets the accidental of the chord, or empty string
-     */
     get accidental(): Accidental {
         return this.root.accidental;
     }
-
-    /**
-     * Returns true if the chord has a flat or sharp accidental
-     */
     get hasAccidental(): boolean {
         return this.accidental.length > 0;
     }
-
-    /**
-     * Returns true if a chord has a sharp accidental
-     */
     get isSharp(): boolean {
         return this.accidental === "#";
     }
-
-    /**
-     * Returns true if a chord has a flat accidental
-     */
     get isFlat(): boolean {
         return this.accidental === "b";
     }
-
-    /**
-     * Gets the number of inversions of this chord
-     */
     get inversionCount(): number {
         return this.notes.length;
     }
@@ -168,27 +149,10 @@ export class ChordImpl implements Chord
         return getChordIntervals(this.quality);
     }
 
-    /**
-     * Gets the notes for the specified inversion,
-     * e.g. C-0(CEG), C-1(EGC), C-2(GCE)
-     * @param inversion Inversion number
-     */
-    getInversion(inversion: number): Note[] {
-        // Make a copy
-        const notes = this.notes.slice();
-        
-        // Shift the notes for the number of variation
-        for (let i = 0; i < inversion; i++) {
-            notes.push(notes.shift());
-        }
-
-        return notes;
+    getInversion(inversion: number): Chord {
+        return getChord(this.root, this.quality, this.notes[inversion]);
     }
 
-    /**
-     * Gets the chord that is the specified number of steps from this one
-     * @param steps 
-     */
     transpose(steps: number): Chord {
         return getChord(this.root.transpose(steps), this.quality, this.bass.transpose(steps));
     }
@@ -197,12 +161,19 @@ export class ChordImpl implements Chord
         return this.name;
     }
 
-    /**
-     * Determines equality by checking if two chords have the same root, quality and bass
-     * @param chord The chord to check
-     */
     equals(chord: Chord): boolean {
         return this.name === chord.name;
+    }
+
+    equalsIgnoreBass(chord: Chord): boolean {
+        return this.root.number === chord.root.number
+            && this.quality === chord.quality;
+    }
+
+    isSameAs(chord: Chord): boolean {
+        return this.root.number === chord.root.number
+            && this.quality === chord.quality
+            && this.bass.number === chord.bass.number;
     }
 }
 

@@ -3,11 +3,12 @@
 This is a npm package of music theory utilities created for the Power Chord app.
 
 ## Notes
-- Notes are immutable objects that can be obtained by calling the getNote() function.
+- Notes are immutable objects that represent a note
+- Get an instance by calling the `getNote()` function.
 - Notes are sigletons by name and octave.
 Therefore to check if two notes have the same name and octave simply use the equality operator 
   - `getNote("A#", 4) === getNote("A#", 4) => true`.
-- If you want to check equality without regard to note name use the equals() method. For example, A#4 is the same as Bb4 even though they have different names.
+- If you want to check equality without regard to note name use the `equals()` method. For example, A#4 is the same as Bb4 even though they have different names.
   - `getNote("A#", 4).equals(getNote("Bb", 4)) => true`
 - If you want to check equality without regard to note name or octave use the equalsIgnoreOctave() method.
   - `getNote("A#", 5).equalsIgnoreCase(getNote("Bb", 4)) => true`
@@ -20,6 +21,9 @@ Therefore to check if two notes have the same name and octave simply use the equ
 
 ## Chords
 - Chords are immutable objects that are a collection of two or more notes.
+- Get an instance by calling the `getChord()` function.
+- Chords are not singletons so using the equakity operator will not work correctly
+- To check equality use the `equals()` method
 
 ## SCales
 - Scales are immutable objects that are a collection of notes ordered by pitch.

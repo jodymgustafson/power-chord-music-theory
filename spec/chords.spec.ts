@@ -1,5 +1,5 @@
 import { parseChord, Chord, getChord } from "../chords";
-import { getNoteNames, getNote } from "../notes";
+import { getNoteNames, getNote, parseNote } from "../notes";
 
 function validateParseChord(c: Chord, expected: any): void {
     expect(c.root.name).toBe(expected.root);
@@ -68,10 +68,10 @@ describe("When get chord inversions", () => {
         expect(getNoteNames(c.notes)).toEqual(["C", "E", "G"]);
     });
     it("should get C/E", () => {
-        expect(getNoteNames(c.getInversion(1))).toEqual(["E", "G", "C"]);
+        expect(getNoteNames(c.getInversion(1).notes)).toEqual(["E", "G", "C"]);
     });
     it("should get C/G", () => {
-        expect(getNoteNames(c.getInversion(2))).toEqual(["G", "C", "E"]);
+        expect(getNoteNames(c.getInversion(2).notes)).toEqual(["G", "C", "E"]);
     });
     it("should get F#sus4", () => {
         expect(parseChord("F#sus4").notes.map(n => n.name)).toEqual(["F#", "B", "C#"]);
@@ -83,5 +83,38 @@ describe("When get a chord with an invalid bass note", () => {
         expect(() => parseChord("C/Fb")).toThrowError("Bass note 'Fb' is not a member of this chord");
         expect(() => parseChord("Ddim/A")).toThrowError("Bass note 'A' is not a member of this chord");
         expect(() => parseChord("C#dim/F")).toThrowError("Bass note 'F' is not a member of this chord");
-    })
-})
+    });
+});
+
+describe("When check chord equalities", () => {
+    it("should be false for equals", () => {
+        expect(parseChord("C/G").equals(parseChord("C/E"))).toBeFalse();
+    });
+    it("should be true for equals ignore bass", () => {
+        expect(parseChord("C/G").equalsIgnoreBass(parseChord("C/E"))).toBeTrue();
+    });
+    it("should be false for is same as", () => {
+        expect(parseChord("C#M/G#").isSameAs(parseChord("DbM/Ab"))).toBeTrue();
+    });
+});
+
+describe("When transpose chord", () => {
+    it("should get chord 1 step up", () => {
+        expect(getChord("C").transpose(1)).toEqual(getChord("C#"));
+    });
+    it("should get chord 1 step down", () => {
+        expect(getChord("C").transpose(-1)).toEqual(getChord(parseNote("B3")));
+    });
+    it("should get chord 11 steps up", () => {
+        expect(getChord("C").transpose(11)).toEqual(getChord("B"));
+    });
+    it("should get chord 11 steps down", () => {
+        expect(getChord("C").transpose(-11)).toEqual(getChord(parseNote("C#3")));
+    });
+    it("should get chord 13 steps up", () => {
+        expect(getChord("C").transpose(13)).toEqual(getChord(parseNote("C#5")));
+    });
+    it("should get chord 13 steps down", () => {
+        expect(getChord("C").transpose(-13)).toEqual(getChord(parseNote("B2")));
+    });
+});
