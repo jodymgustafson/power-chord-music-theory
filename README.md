@@ -42,11 +42,23 @@ Therefore to check if two notes have the same name and octave simply use the equ
 - Seven scales modes are supported: major/ionian, minor/aeolian, dorian, phrygian, lydian, mixolydian, locrian
 - Get an instance by calling the `getScale()` function
 - To check for equality use the `equals()` method
+- If you want to check equality without regards to the tonic name use `isSameAs()`
+    - `getScale("C#M").isSameAs(getScale("DbM"))` => true
 - Other scale methods
     - `getNoteInScale()` Gets a note with the name adjusted to the scale
     - `getChordInScale()` Gets a chord with the name adjusted to the scale
 - Other functions available:
     - `parseScale()` Parses a scale by name and mode (e.g. C#m)
+
+## Chord Lookup
+- You can lookup chords from a set of notes using the `getChordFromNotes()` function.
+- For example, the notes ["C", "E", "G"] returns a C chord.
+
+## Circle of Fifths
+- A CircleOfFifths is an immutable object that provides info about a scale
+- Get an instance by calling the `getCircleOfFifths()` function with a scale
+- The `fifths` property is an array of fifth information
+- The `orderedFifths` property is the same except sorted in natural order starting with the tonic
 
 ## Build Process
 Follow these steps to build the package.

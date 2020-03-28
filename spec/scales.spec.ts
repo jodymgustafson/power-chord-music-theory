@@ -120,3 +120,18 @@ describe("When get chord in scale", () => {
         expect(scale.getChordInScale(getChord("B")).name).toBe("B");
     });
 });
+
+describe("When test equality", () => {
+    it ("C should be equal to C", () => {
+        expect(getScale("C").equals(getScale("C"))).toBeTrue();
+    });
+    it ("C should not equal G", () => {
+        expect(getScale("C").equals(getScale("G"))).toBeFalse();
+    });
+    it ("C# should be same as Db", () => {
+        expect(getScale("C#").isSameAs(getScale("Db"))).toBeTrue();
+    });
+    it ("C# should not be same as Gb", () => {
+        expect(getScale("C#").isSameAs(getScale("Gb"))).toBeFalse();
+    });
+});

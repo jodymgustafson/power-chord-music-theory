@@ -28,23 +28,26 @@ const modeQualities = new CircularList<ModeQuality>(["M", "M", "M", "m", "m", "m
 const degreeNumbers = new CircularList<DegreeNumber>([1, 5, 2, 6, 3, 7, 4]);
 const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII"];
 
-/** Normalizes a tonic to one of the standard names */
-export function normalizeTonic(tonic: NoteName): NoteName {
-    return tonic === "Db" ? "C#" :
-           tonic === "D#" ? "Eb" :
-           tonic === "Gb" ? "F#" :
-           tonic === "G#" ? "Ab" :
-           tonic === "A#" ? "Bb" :
-           tonic;
+export interface CircleOfFifths
+{
+    /**
+     * Gets the fifths in circle of fifths order, e.g. CM = F, C, G, D, A, E, B
+     */
+    readonly fifths: FifthInfo[];
+
+    /**
+     * Gets fifths in note natural order starting with the tonic, e.g. CM = C, D, E, F, G, A, B
+     */
+    readonly orderedFifths: FifthInfo[];
 }
 
-export class CircleOfFifths
+class CircleOfFifthsImpl implements CircleOfFifths
 {
     private _fifths: FifthInfo[];
     private _orderedFifths: FifthInfo[];
 
     constructor(readonly scale: MusicScale) {}
-
+v
     /**
      * Gets the fifths in circle of fifths order, e.g. CM = F, C, G, D, A, E, B
      */
@@ -59,6 +62,14 @@ export class CircleOfFifths
         return this._orderedFifths || (this._orderedFifths = sortFifths(this.fifths.slice()));
 
     }
+}
+
+/**
+ * Gets circle of fifths info for a music scale
+ * @param scale A music scale
+ */
+export function getCircleOfFifths(scale: MusicScale): CircleOfFifths {
+    return new CircleOfFifthsImpl(scale);
 }
 
 /**

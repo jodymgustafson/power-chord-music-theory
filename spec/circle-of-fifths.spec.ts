@@ -1,4 +1,4 @@
-import { CircleOfFifths, FifthInfo } from "../circle-of-fifths"
+import { CircleOfFifths, FifthInfo, getCircleOfFifths } from "../circle-of-fifths"
 import { MusicScale, getScale } from "../scales";
 
 function validateFifth(fifth: FifthInfo, expected: any): void {
@@ -11,7 +11,7 @@ function validateFifth(fifth: FifthInfo, expected: any): void {
 }
 
 describe("When get fifths for CM", () => {
-    const cof = new CircleOfFifths(getScale("C", "M"));
+    const cof = getCircleOfFifths(getScale("C", "M"));
     const fifths = cof.fifths;
     it("should get notes in fifth order", () => {
         expect(fifths.map(f => f.note.name)).toEqual(["F", "C", "G", "D", "A", "E", "B"]);
@@ -44,7 +44,7 @@ describe("When get fifths for CM", () => {
 });
 
 describe("When get fifths for Gm", () => {
-    const cof = new CircleOfFifths(getScale("G", "m"));
+    const cof = getCircleOfFifths(getScale("G", "m"));
     const fifths = cof.fifths;
     it("should get notes in fifth order", () => {
         expect(fifths.map(f => f.note.name)).toEqual(["Eb", "Bb", "F", "C", "G", "D", "A"]);
@@ -77,7 +77,7 @@ describe("When get fifths for Gm", () => {
 });
 
 describe("When get fifths for C#M", () => {
-    const cof = new CircleOfFifths(getScale("C#", "M"));
+    const cof = getCircleOfFifths(getScale("C#", "M"));
     const fifths = cof.fifths;
     it("should get notes in fifth order", () => {
         expect(fifths.map(f => f.note.name)).toEqual(["F#", "C#", "G#", "D#", "A#", "E#", "B#"]);

@@ -86,7 +86,7 @@ export interface Chord
 
     /**
      * Determines if two chords are the same in regards to pitch.
-     * E.g. C#M/G# and DbM/Ab are the same
+     * E.g. C#M/G# and DbM/Ab are the same.
      * @param chord The chord to check
      */
     isSameAs(chord: Chord): boolean;

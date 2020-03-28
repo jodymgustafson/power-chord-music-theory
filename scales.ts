@@ -70,7 +70,18 @@ export interface MusicScale
      */
     getChordInScale(chord: Chord): Chord;
 
-    equals(scale: MusicScaleImpl): boolean;
+    /**
+     * Checks if two scales are equal
+     * @param scale Scale to check
+     */
+    equals(scale: MusicScale): boolean;
+
+    /**
+     * Determines if two scales are the same in regards to pitch.
+     * E.g. C#M and DbM are the same
+     * @param scale Scale to check
+     */
+    isSameAs(scale: MusicScale): boolean;
 
     toString(): string;
 }
@@ -152,8 +163,13 @@ export class MusicScaleImpl implements MusicScale
         return this.name;
     }
 
-    equals(scale: MusicScaleImpl): boolean {
+    equals(scale: MusicScale): boolean {
         return this.name === scale.name;
+    }
+
+    isSameAs(scale: MusicScale): boolean {
+        return this.tonic.number === scale.tonic.number
+            && this.mode === scale.mode;
     }
 }
 

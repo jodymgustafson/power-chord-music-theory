@@ -73,7 +73,7 @@ export default interface Note
     transpose(steps: number): Note;
 
     /**
-     * Determines if this note is equal to another note.
+     * Determines if this note is equal to another note in pitch and octave.
      * Equality is determined by the note number and octave.
      * E.g. A#4 === Bb4
      * @param note The note to test
@@ -81,12 +81,19 @@ export default interface Note
     equals(note: Note): boolean;
 
     /**
-     * Determines if this note is equal to another note without regard to octave.
+     * Determines if this note is equal to another note in pitch without regard to octave.
      * Equality is determined by the note number.
      * E.g. A#5 === Bb4
      * @param note The note to test
      */
     equalsIgnoreOctave(note: Note): boolean;
+
+    /**
+     * Determines if this note is equal to another note without regard to octave.
+     * E.g. A# === Bb
+     * @param note  The note to test
+     */
+    isSameAs(note: Note): boolean;
 
     toString(): string;
 }
@@ -146,6 +153,10 @@ class NoteImpl implements Note
 
     equalsIgnoreOctave(note: Note): boolean {
         return this.number === note.number;
+    }
+
+    isSameAs(note: Note): boolean {
+        return this.equalsIgnoreOctave(note);
     }
 
     toString(): string {
@@ -256,4 +267,14 @@ export function getNoteNames(notes: Note[]): NoteName[] {
  */
 export function getNoteNumbers(notes: Note[]): number[] {
     return notes.map(n => n.number);
+}
+
+/** Normalizes a note name to one of the standard names */
+export function normalizeNoteName(noteName: NoteName): NoteName {
+    return noteName === "Db" ? "C#" :
+           noteName === "D#" ? "Eb" :
+           noteName === "Gb" ? "F#" :
+           noteName === "G#" ? "Ab" :
+           noteName === "A#" ? "Bb" :
+           noteName;
 }
