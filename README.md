@@ -60,6 +60,15 @@ Therefore to check if two notes have the same name and octave simply use the equ
 - The `fifths` property is an array of fifth information
 - The `orderedFifths` property is the same except sorted in natural order starting with the tonic
 
+## Chord Progression Calculator
+- The Chord Progression Calculator gives you the list of chords that best follow another chord in a key
+- Get an instance by calling the get` getChordProgressionCalculator()` function
+- Methods
+    - `rootChord` Gets the root chord for the progression
+    - `getChordAt()` Gets the chord at the specified position in the scale
+    - `getNextChords()` Gets the list of suggested chords that could follow a chord
+    - `getChordNumber()` Gets the chord number in the current key where the tonic is 0
+
 ## Build Process
 Follow these steps to build the package.
 

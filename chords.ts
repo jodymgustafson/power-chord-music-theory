@@ -92,7 +92,7 @@ export interface Chord
     isSameAs(chord: Chord): boolean;
 }
 
-export class ChordImpl implements Chord
+class ChordImpl implements Chord
 {
     readonly root: Note;
     readonly quality: ChordQuality;

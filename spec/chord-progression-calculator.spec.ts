@@ -1,9 +1,9 @@
-import { ChordProgressionCalculator } from "../chord-progression-calculator";
-import { Chord, parseChord, getChord } from "../chords";
+import { getChordProgressionCalculator } from "../chord-progression-calculator";
+import { parseChord, getChord } from "../chords";
 import { parseScale } from "../scales";
 
 describe("When get chord progressions in GM", () => {
-    const calc = new ChordProgressionCalculator(parseScale("G"));
+    const calc = getChordProgressionCalculator(parseScale("G"));
     it("should get root chords in GM", () => {
         expect(calc.rootChord().name).toBe("G");
     });

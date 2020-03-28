@@ -87,7 +87,7 @@ export interface MusicScale
 }
 
 
-export class MusicScaleImpl implements MusicScale
+class MusicScaleImpl implements MusicScale
 {
     readonly tonic: Note;
     readonly mode: ModeName;

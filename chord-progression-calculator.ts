@@ -20,32 +20,49 @@ const minorProgressions = [
     [0, 6],                 // vii* => i
 ];
 
+export interface ChordProgressionCalculator
+{
+    /** Gets the root chord for the progression */
+    readonly rootChord: Chord;
+
+    /** Gets the chord at the specified position in the scale */
+    getChordAt(num: number): Chord;
+
+    /**
+     * Gets the list of suggested chords that could follow a chord.
+     * If it's not a valid chord in the scale then only the root note is returned.
+     */
+    getNextChords(chord: Chord): Chord[];
+
+    /** 
+     * Gets the chord number in the current key where the tonic is 0.
+     * If the chord doesn't exist in the key -1 is returned.
+     */
+    getChordNumber(chord: Chord): number;
+}
+
 /**
  * Calculates chord progressions. This class is immutable.
  */
-export class ChordProgressionCalculator
+class ChordProgressionCalculatorImpl implements ChordProgressionCalculator
 {
-    private chords: Chord[];
+    readonly key: MusicScale;
     private progressions: number[][];
 
-    /** Set the chords and quality used to find the chord progressions */
-    constructor(readonly key: MusicScale) {
-        this.chords = key.chords;
-        this.progressions = (key.mode === "minor" ? minorProgressions : majorProgressions);
+    constructor(key: MusicScale) {
+        this.key = key;
+        this.progressions = (key.modeAlias === "minor" ? minorProgressions : majorProgressions);
     }
 
-    /** Gets the chord at the specified position in the scale (from the chords set in setChords()) */
-    public getChordAt(num: number): Chord {
-        return this.chords[num];
-    }
-
-    /** Gets the root chord for the progression */
-    public rootChord(): Chord {
+    get rootChord(): Chord {
         return this.getChordAt(0);
     }
 
-    /** Gets the list of possible chords that could follow a chord */
-    public getNextChords(chord: Chord): Chord[] {
+    getChordAt(num: number): Chord {
+        return this.key.chords[num];
+    }
+
+    getNextChords(chord: Chord): Chord[] {
         let num = this.getChordNumber(chord);
         // If it's not a valid chord set to root
         if (num < 0) {
@@ -57,17 +74,25 @@ export class ChordProgressionCalculator
         // Build list of chords
         let nextChords: Chord[] = [];
         for (let i = 0; i < progs.length; i++) {
-            nextChords.push(this.chords[progs[i]]);
+            nextChords.push(this.key.chords[progs[i]]);
         }
 
         return nextChords;
     }
 
-    /** 
-     * Gets the number of the chord in the current key where the tonic is 0.
-     * If the chord doesn't exist in the key -1 is returned.
-     */
-    public getChordNumber(chord: Chord): number {
-        return this.chords.findIndex(c => c.name === chord.name);
+    getChordNumber(chord: Chord): number {
+        return this.key.chords.findIndex(c => c.name === chord.name);
     }
+}
+
+/**
+ * Gets an instance of a chord progrerssion calculator
+ * @param scale The scale to use, must be either major or minor
+ */
+export function getChordProgressionCalculator(scale: MusicScale): ChordProgressionCalculator {
+    if (scale.modeAlias !== "major" && scale.modeAlias !== "minor") {
+        throw new Error("Only major and minor scales are supported");
+    }
+
+    return new ChordProgressionCalculatorImpl(scale);
 }
