@@ -1,10 +1,11 @@
 import Note, { NoteName, Accidental, getNote } from "./notes";
 import { formatAccidentals } from "./util/format";
+import { chords } from ".";
 
 /** Supported chord qualities */
 export type ChordQuality = "M"|"m"|"7"|"M7"|"m7"|"dim"|"dim7"|"sus4"|"sus2"|"aug"|"5"|"M6"|"m6"|"add2"|"9"|"M9"|"m9";
 
-export const chordIntervals = {
+export const CHORD_INTERVALS = {
     "M": [0, 4, 7],
     "m": [0, 3, 7],
     "7": [0, 4, 7, 10],
@@ -145,6 +146,14 @@ export class Chord
     toString(): string {
         return this.name;
     }
+
+    /**
+     * Determines equality by checking if two chords have the same root, quality and bass
+     * @param chord The chord to check
+     */
+    equals(chord: Chord): boolean {
+        return this.name === chord.name;
+    }
 }
 
 /**
@@ -167,7 +176,7 @@ export function parseChord(chord: string): Chord {
  * Gets the chord intervals for the specified chord quality
  */
 export function getChordIntervals(quality: ChordQuality): number[] {
-    const ints = chordIntervals[quality];
+    const ints = CHORD_INTERVALS[quality];
     if (ints === undefined) {
         throw new Error("Unknown quality " + quality);
     }

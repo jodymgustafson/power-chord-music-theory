@@ -1,5 +1,5 @@
 import Note, { sortNotes, NoteName, getNote } from "./notes";
-import { ChordQuality, Chord, getChordIntervals, chordIntervals } from "./chords";
+import { ChordQuality, Chord, getChordIntervals, CHORD_INTERVALS } from "./chords";
 
 /** Gets the chord with the specified notes, or undefined if not found */
 export function getChordFromNotes(...notes: NoteName[]): Chord | undefined;
@@ -43,7 +43,7 @@ function getNextPermutation(notes: Note[]): Note[] {
 }
 
 function lookupQualityByIntervals(intervals: number[]): ChordQuality | undefined {
-    for (const i in chordIntervals) {
+    for (const i in CHORD_INTERVALS) {
         const quality = i as ChordQuality;
         const chordInts = getChordIntervals(quality);
         if (compareIntervals(chordInts, intervals)) {

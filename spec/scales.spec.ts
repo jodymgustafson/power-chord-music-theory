@@ -1,4 +1,4 @@
-import { MusicScale, parseKey } from "../scales";
+import { MusicScale, parseScale } from "../scales";
 import { Chord, parseChord } from "../chords";
 
 function validateScale(scale: MusicScale, expected: any): void {
@@ -81,19 +81,19 @@ describe("When get scale", () => {
 });
 
 describe("When using parseKey", () => {
-    it("should parse C", () => validateScale(parseKey("C"), {
+    it("should parse C", () => validateScale(parseScale("C"), {
         tonic: "C", mode: "ionian", name: "CM", modeAlias: "major",
         chords: ["C", "Dm", "Em", "F", "G", "Am", "Bdim"],
         notes: ["C", "D", "E", "F", "G", "A", "B"],
         signature: { accidental: "", count: 0 }}));
 
-    it("should parse DM", () => validateScale(parseKey("DM"), {
+    it("should parse DM", () => validateScale(parseScale("DM"), {
         tonic: "D", mode: "ionian", name: "DM", modeAlias: "major",
         chords: ["D", "Em", "F#m", "G", "A", "Bm", "C#dim"],
         notes: ["D", "E", "F#", "G", "A", "B", "C#"],
         signature: { accidental: "#", count: 2 }}));
 
-    it("should parse Ebm", () => validateScale(parseKey("Ebm"), {
+    it("should parse Ebm", () => validateScale(parseScale("Ebm"), {
         tonic: "Eb", mode: "aeolian", name: "Ebm", modeAlias: "minor",
         notes: ["Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"],
         chords: ["Ebm", "Fdim", "Gb", "Abm", "Bbm", "Cb", "Db"],

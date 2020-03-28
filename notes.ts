@@ -12,7 +12,7 @@ type NoteInfo = {
     number: number;
 }
 
-const notesByName: {[key: string]: NoteInfo} = {
+const NOTES_BY_NAME: {[key: string]: NoteInfo} = {
     "B#": { name: "B#", alias: "C", number: 0 },
     "C": { name: "C", alias: "B#", number: 0 },
     "C#": { name: "C#", alias: "Db", number: 1 },
@@ -100,7 +100,7 @@ class NoteImpl implements Note
     readonly octave: number;
 
     constructor(name: NoteName, octave = 4) {
-        let noteInfo = notesByName[name];
+        let noteInfo = NOTES_BY_NAME[name];
         if (!noteInfo) {
             throw new Error(name + " is not a valid note name");
         }
@@ -145,9 +145,16 @@ class NoteImpl implements Note
     equalsIgnoreOctave(note: Note): boolean {
         return this.number === note.number;
     }
+
+    toString(): string {
+        return this.name + this.octave;
+    }
 }
 
-/** Pool of immutable note instances */
+/**
+ * Pool of immutable note instances where the key is note name and octave.
+ * At most there will be 21 * number of octaves.
+ */
 const notePool: {[key: string]: Note}= {};
 
 /**
@@ -185,19 +192,6 @@ export function getNote(nameOrNumber: (NoteName|number), octave = 4): Note {
 }
 
 /**
- * Parses a note name into a Note object, or undefined if invalid
- * @param note Note name with optional number for octave, e.g. C#6
- */
-export function parseNote(note: string): Note {
-    const re = /([A-G][#,b]?)(\d?)/.exec(note);
-    if (re && re[1]) {
-        const octave = re[2] ? parseInt(re[2], 10) : undefined;
-        return getNote(re[1] as NoteName, octave);
-    }
-    return undefined;
-}
-
-/**
  * Gets one or more notes using integer notation
  * @param number Note number where 0=C. Numbers over 11 and negative numbers will affect the octave.
  */
@@ -219,6 +213,19 @@ export function getNotes(...nameOrNumber: (string|number)[]): Note[] {
             throw new Error("Value must be a string or number");
         }
     });
+}
+
+/**
+ * Parses a note name into a Note object, or undefined if invalid
+ * @param note Note name with optional number for octave, e.g. C#6
+ */
+export function parseNote(note: string): Note {
+    const re = /([A-G][#,b]?)(\d?)/.exec(note);
+    if (re && re[1]) {
+        const octave = re[2] ? parseInt(re[2], 10) : undefined;
+        return getNote(re[1] as NoteName, octave);
+    }
+    return undefined;
 }
 
 /**

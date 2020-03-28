@@ -6,40 +6,22 @@ import * as cof from "./circle-of-fifths";
 export type ModeName = "lydian"|"M"|"major"|"ionian"|"mixolydian"|"dorian"|"m"|"minor"|"aeolian"|"phrygian"|"locrian";
 /** Mode names starting with ionian (major) */
 export const modes: ModeName[] = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"];
-const modeIntervals = [2, 2, 1, 2, 2, 2, 1];
 
 export type KeySignature = {
     accidental: Accidental;
-    //signature: string[];
     count: number;
 }
-                        
-// Scale intervals (computed below)
-// e.g. CM = Am = [0, 2, 4, 5, 7, 9, 11]
-const scaleIntervals: {[key: string]: number[]} = {};
 
-// static intializer
-(() => {
-    let intervals = modeIntervals.slice();
-    for (let i = 0; i < modeIntervals.length; i++) {
-        scaleIntervals[modes[i]] = computeIntervals(intervals);
-        // Rotate to next interval
-        intervals = rotate(intervals);
-    }
-
-    function computeIntervals(intervals: number[]): number[] {
-        const result = [0];
-        for (let i = 1; i < intervals.length; i++) {
-            result.push(result[i - 1] + intervals[i - 1]);
-        }
-        return result;
-    }
-
-    function rotate(intervals: number[]): number[] {
-        intervals.push(intervals.shift());
-        return intervals;
-    }
-})();
+// major/ionian intervals ;
+const SCALE_INTERVALS: {[key: string]: number[]} = {
+    lydian:     [ 0, 2, 4, 6, 7, 9, 11 ], // [2, 2, 2, 1, 2, 2, 1]
+    ionian:     [ 0, 2, 4, 5, 7, 9, 11 ], // [2, 2, 1, 2, 2, 2, 1]
+    mixolydian: [ 0, 2, 4, 5, 7, 9, 10 ], // [2, 1, 2, 2, 2, 1, 2]
+    dorian:     [ 0, 2, 3, 5, 7, 9, 10 ], // [1, 2, 2, 2, 1, 2, 2]
+    aeolian:    [ 0, 2, 3, 5, 7, 8, 10 ], // [2, 2, 2, 1, 2, 2, 1]
+    phrygian:   [ 0, 1, 3, 5, 7, 8, 10 ], // [2, 2, 1, 2, 2, 1, 2]
+    locrian:    [ 0, 1, 3, 5, 6, 8, 10 ]  // [2, 1, 2, 2, 1, 2, 2]
+};
 
 export class MusicScale
 {
@@ -68,7 +50,7 @@ export class MusicScale
     get signature(): KeySignature {
         return this._signature || (this._signature = getSignature(this.tonic, this.mode));
     }
-    
+
     get notes(): Note[] {
         return this._notes || (this._notes = getNotesInScale(this))
     }
@@ -101,15 +83,15 @@ export class MusicScale
     get isFlat(): boolean {
         return this.tonicNote.isFlat
     }
-    
+
     /**
-     * Gets the note adjusted to the key.
+     * Gets the note adjusted to the scale.
      * For example, in the key of C# the Ab note will be adjusted to G#.
      * @param note A note in integer notation
      */
     getNoteInScale(noteNumber: number, octave?: number): Note;
     /**
-     * Gets the note name for the note and adjusts the note to the key.
+     * Gets the note name for the note and adjusts the note to the scale.
      * For example, in the key of C# the Ab note will be adjusted to G#.
      * @param note A note name
      */
@@ -119,7 +101,7 @@ export class MusicScale
     }
 
     /**
-     * Gets the chord adjusted to the key.
+     * Gets the chord adjusted to the scale.
      * For example, in the key of C# the Ab chord will be adjusted to G#.
      * @param chord The chord to adjust
      */
@@ -133,11 +115,11 @@ export class MusicScale
 }
 
 /**
- * Parses a major or minor key into a MusicScale object, or undefined if invalid
- * @param key Name of a key, m=minor, M=major, e.g. C#m or C#M or just C#
+ * Parses a major or minor scale into a MusicScale object, or undefined if invalid
+ * @param scale Name of a scale, m=minor, M=major, e.g. C#m or C#M or just C#
  */
-export function parseKey(key: string): MusicScale {
-    const re = /([A-G]{1}[#|b]?)([m,M]?)/.exec(key);
+export function parseScale(scale: string): MusicScale {
+    const re = /([A-G]{1}[#|b]?)([m,M]?)/.exec(scale);
     if (re && re[1]) {
         return new MusicScale(re[1] as NoteName, re[2] === "m" ? "minor" : "major")
     }
@@ -145,7 +127,8 @@ export function parseKey(key: string): MusicScale {
 }
 
 /**
- * Normalizes a mode name to one of the seven modes 
+ * Normalizes a mode name to one of the seven default mode names.
+ * E.g. major => ionian, minor => aeolian
  */
 export function normalizeMode(mode: ModeName|""): ModeName {
     switch (mode) {
@@ -166,9 +149,8 @@ export function normalizeMode(mode: ModeName|""): ModeName {
  * @param scale The scale to get notes for
  */
 function getNotesInScale(scale: MusicScale): Note[] {
-    const intervals = scaleIntervals[scale.mode];
+    const intervals = SCALE_INTERVALS[scale.mode];
     const tonicNote = getNote(scale.tonic); // don't use scale.tonicNote or it will cause a loop
-    //const scaleAccidental = scale.signature.accidental;
 
     const notes = intervals.map(i => {
         // Comnpute the next note from the tonic and interval
@@ -195,13 +177,13 @@ function getNoteInScale(note: Note, tonicNote: Note, signature: KeySignature): N
 // qualities for each note of the major scale
 const scaleQualities: (ChordQuality|"")[] = ["", "m", "m", "", "", "m", "dim"];
 
-/** 
+/**
  * Gets all of the chords in a scale
  * @param scale The scale to get chords in
  */
 function getChordsInScale(scale: MusicScale): Chord[] {
     const offset = modes.indexOf(scale.mode);
-    
+
     const chordsInScale = scale.notes.map((note, i) => {
         const quality = scaleQualities[(i + offset) % 7] || "M";
         return new Chord(note.name, quality)
