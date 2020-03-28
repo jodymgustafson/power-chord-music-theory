@@ -5,7 +5,7 @@ import { parseScale } from "../scales";
 describe("When get chord progressions in GM", () => {
     const calc = getChordProgressionCalculator(parseScale("G"));
     it("should get root chords in GM", () => {
-        expect(calc.rootChord().name).toBe("G");
+        expect(calc.rootChord.name).toBe("G");
     });
     it("should get chords in GM", () => {
         expect(calc.getChordAt(0).name).toBe("G");
