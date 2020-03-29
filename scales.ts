@@ -3,7 +3,7 @@ import { formatAccidentals } from ".";
 import Chord, { ChordQuality, getChord, NoteOrName } from "./chords";
 import * as cof from "./circle-of-fifths";
 
-export type ModeName = "lydian"|"M"|"major"|"ionian"|"mixolydian"|"dorian"|"m"|"minor"|"aeolian"|"phrygian"|"locrian";
+export type ModeName = "lydian"|"major"|"ionian"|"mixolydian"|"dorian"|"minor"|"aeolian"|"phrygian"|"locrian";
 
 export type KeySignature = {
     accidental: Accidental;
@@ -38,6 +38,8 @@ export default interface MusicScale
     readonly tonic: Note;
     /** The mode of the scale */
     readonly mode: ModeName;
+    /** The normalized mode of the scale (major => ionian, minor => aeolian) */
+    readonly normalizedMode: ModeName;
     /** Gets the name of the scale */
     readonly name: string;
     /** Gets name with accidentals formatted */
@@ -99,6 +101,7 @@ class MusicScaleImpl implements MusicScale
 {
     readonly tonic: Note;
     readonly mode: ModeName;
+    readonly normalizedMode: ModeName;
     readonly name: string;
     readonly modeAlias: ModeName|"";
     private _notes: Note[];
@@ -107,9 +110,20 @@ class MusicScaleImpl implements MusicScale
 
     constructor(tonic: Note, mode: ModeName = "major") {
         this.tonic = tonic;
-        this.mode = normalizeMode(mode);
-        this.name = tonic.name + (this.mode === "ionian" ? "M" : this.mode === "aeolian" ? "m" : `(${this.mode.slice(0,3)})`);
-        this.modeAlias = this.mode === "ionian" ? "major" : this.mode === "aeolian" ? "minor" : "";
+        this.mode = mode;
+        this.normalizedMode = normalizeMode(mode);
+
+        this.name = tonic.name + (
+            this.mode === "major" ? "M" :
+            this.mode === "minor" ? "m" :
+            `(${this.mode.slice(0,3)})`);
+        
+        this.modeAlias = 
+            this.mode === "ionian" ? "major" :
+            this.mode === "major" ? "ionian" :
+            this.mode === "aeolian" ? "minor" :
+            this.mode === "minor" ? "aeolian" :
+            "";
     }
 
     /**
@@ -120,7 +134,7 @@ class MusicScaleImpl implements MusicScale
     }
 
     get signature(): KeySignature {
-        return this._signature || (this._signature = getSignature(this.tonic, this.mode));
+        return this._signature || (this._signature = getSignature(this.tonic, this.normalizedMode));
     }
 
     get notes(): Note[] {
@@ -177,7 +191,7 @@ class MusicScaleImpl implements MusicScale
 
     isSameAs(scale: MusicScale): boolean {
         return this.tonic.number === scale.tonic.number
-            && this.mode === scale.mode;
+            && (this.mode === scale.mode || this.modeAlias === scale.mode)
     }
 }
 
@@ -221,10 +235,8 @@ export function normalizeMode(mode: ModeName|""): ModeName {
     switch (mode) {
         case "":
         case "major":
-        case "M":
             return "ionian";
         case "minor":
-        case "m":
             return "aeolian";
         default:
             return mode;
@@ -236,7 +248,7 @@ export function normalizeMode(mode: ModeName|""): ModeName {
  * @param scale The scale to get notes for
  */
 function getNotesInScale(scale: MusicScale): Note[] {
-    const intervals = SCALE_INTERVALS[scale.mode];
+    const intervals = SCALE_INTERVALS[scale.normalizedMode];
     const tonicNote = scale.tonic;
 
     const notes = intervals.map(i => {
@@ -269,7 +281,7 @@ const scaleQualities: (ChordQuality|"")[] = ["", "m", "m", "", "", "m", "dim"];
  * @param scale The scale to get chords in
  */
 function getChordsInScale(scale: MusicScale): Chord[] {
-    const offset = OFFSETS_BY_MODE_NAME[scale.mode];
+    const offset = OFFSETS_BY_MODE_NAME[scale.normalizedMode];
 
     const chordsInScale = scale.notes.map((note, i) => {
         const quality = scaleQualities[(i + offset) % 7] || "M";
