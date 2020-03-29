@@ -1,4 +1,4 @@
-import Note, { getNote, parseNote, NoteName, getNoteNames, getNotes } from "./notes";
+import Note, { getNote, parseNote, NoteName, getNotes, getFormattedNoteNames } from "./notes";
 import Chord, { getChord, parseChord, ChordQuality } from "./chords";
 import CircleOfFifths, { FifthInfo, ModeQuality, getCircleOfFifths } from "./circle-of-fifths";
 import ChordProgressionCalculator, { getChordProgressionCalculator } from "./chord-progression-calculator";
@@ -9,7 +9,7 @@ import {formatAccidentals, unformatAccidentals} from "./util/format";
 import MusicScale, { KeySignature, ModeName, parseScale, getScale} from "./scales";
 
 export {
-    NoteName, Note, getNote, getNotes, getNoteNames, parseNote,
+    NoteName, Note, getNote, getNotes, getFormattedNoteNames, parseNote,
     Chord, ChordQuality, getChord, parseChord,
     MusicScale, KeySignature, ModeName, parseScale, getScale,
     CircleOfFifths, FifthInfo, ModeQuality, getCircleOfFifths,
