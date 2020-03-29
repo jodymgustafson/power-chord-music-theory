@@ -1,6 +1,6 @@
 import Note, {  NoteName, Accidental, getNote, getNoteNames } from "./notes";
 import { formatAccidentals } from ".";
-import { Chord, ChordQuality, getChord, NoteOrName } from "./chords";
+import Chord, { ChordQuality, getChord, NoteOrName } from "./chords";
 import * as cof from "./circle-of-fifths";
 
 export type ModeName = "lydian"|"M"|"major"|"ionian"|"mixolydian"|"dorian"|"m"|"minor"|"aeolian"|"phrygian"|"locrian";
@@ -24,7 +24,7 @@ const SCALE_INTERVALS: {[key: string]: number[]} = {
 };
 
 
-export interface MusicScale
+export default interface MusicScale
 {
     /** The tonic note of the scale */
     readonly tonic: Note;

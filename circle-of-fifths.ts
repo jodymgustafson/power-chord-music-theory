@@ -1,6 +1,6 @@
 import { CircularList } from "./util/circular-list";
-import { normalizeMode, ModeName, MusicScale } from "./scales";
-import Note, { NoteName, getNote, getNotes, getNoteNames } from "./notes";
+import MusicScale, { normalizeMode, ModeName } from "./scales";
+import Note, { NoteName, getNotes, getNoteNames } from "./notes";
 
 export type ModeQuality = "M"|"m"|"d";
 export type DegreeNumber = 1|2|3|4|5|6|7;
@@ -28,7 +28,7 @@ const modeQualities = new CircularList<ModeQuality>(["M", "M", "M", "m", "m", "m
 const degreeNumbers = new CircularList<DegreeNumber>([1, 5, 2, 6, 3, 7, 4]);
 const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII"];
 
-export interface CircleOfFifths
+export default interface CircleOfFifths
 {
     /**
      * Gets the fifths in circle of fifths order, e.g. CM = F, C, G, D, A, E, B

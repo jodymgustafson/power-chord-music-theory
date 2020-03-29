@@ -1,5 +1,5 @@
-import { parseChord, Chord, getChord } from "../chords";
-import { getNoteNames, getNote, parseNote } from "../notes";
+import Chord, { parseChord, getChord } from "../chords";
+import { getNoteNames, parseNote } from "../notes";
 
 function validateParseChord(c: Chord, expected: any): void {
     expect(c.root.name).toBe(expected.root);

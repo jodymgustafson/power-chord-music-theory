@@ -1,6 +1,5 @@
 import Note, { NoteName, Accidental, getNote } from "./notes";
 import { formatAccidentals } from "./util/format";
-import { chords } from ".";
 
 /** Supported chord qualities */
 export type ChordQuality = "M"|"m"|"7"|"M7"|"m7"|"dim"|"dim7"|"sus4"|"sus2"|"aug"|"5"|"M6"|"m6"|"add2"|"9"|"M9"|"m9";
@@ -26,7 +25,7 @@ export const CHORD_INTERVALS = {
     "m9": [0, 3, 7, 10, 14],
 };
 
-export interface Chord
+export default interface Chord
 {
     /** Gets the root note of the chord */
     readonly root: Note;

@@ -1,5 +1,5 @@
-import { Chord } from "./chords";
-import { MusicScale } from "./scales";
+import Chord from "./chords";
+import MusicScale from "./scales";
 
 const majorProgressions = [
     [0, 1, 2, 3, 4, 5, 6],  // I => any
@@ -20,7 +20,7 @@ const minorProgressions = [
     [0, 6],                 // vii* => i
 ];
 
-export interface ChordProgressionCalculator
+export default interface ChordProgressionCalculator
 {
     /** Gets the root chord for the progression */
     readonly rootChord: Chord;

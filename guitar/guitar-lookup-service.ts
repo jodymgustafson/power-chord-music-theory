@@ -9,7 +9,7 @@ export type GuitarTab = number[];
 /**
  * Used to look up note names on a guitar fret and get finger positions for chords
  */
-export interface GuitarLookupService {
+export default interface GuitarLookupService {
     /**
      * Gets the note at the specified position
      * @param str String number where 0 is the highest string

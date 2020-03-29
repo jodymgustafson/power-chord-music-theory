@@ -1,5 +1,5 @@
-import { CircleOfFifths, FifthInfo, getCircleOfFifths } from "../circle-of-fifths"
-import { MusicScale, getScale } from "../scales";
+import { FifthInfo, getCircleOfFifths } from "../circle-of-fifths"
+import { getScale } from "../scales";
 
 function validateFifth(fifth: FifthInfo, expected: any): void {
     expect(fifth.note.name).toBe(expected.note);

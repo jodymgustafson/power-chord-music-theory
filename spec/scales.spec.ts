@@ -1,5 +1,5 @@
-import { MusicScale, parseScale, getScale } from "../scales";
-import { Chord, parseChord, getChord } from "../chords";
+import MusicScale, { parseScale, getScale } from "../scales";
+import { parseChord, getChord } from "../chords";
 
 function validateScale(scale: MusicScale, expected: any): void {
     expect(scale.tonic.name).toBe(expected.tonic);
