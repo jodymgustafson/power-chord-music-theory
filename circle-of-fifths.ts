@@ -16,7 +16,7 @@ export type FifthInfo = {
 }
 
 /** Tonic names in circle of fifths order beginning with C */
-export const TONIC_NOTES = new CircularList<Note>(getNotes("C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"));
+export const COF_NOTES = new CircularList<Note>(getNotes("C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"));
 /** Mode names in circle of fifths order beginning with lydian */
 export const MODE_NAMES: ModeName[] = ["lydian", "ionian", "mixolydian", "dorian", "aeolian", "phrygian", "locrian"];
 
@@ -97,7 +97,7 @@ function getFifthInfo(index: number, tonicNumber: number, start: number, scale: 
     const quality = MODE_QUALITIES.itemAt(index);
 
     const info = {
-        note: scale.getNoteInScale(TONIC_NOTES.itemAt(position)),
+        note: scale.getNoteInScale(COF_NOTES.itemAt(position)),
         position: position,
         quality: quality,
         degreeNumber: degreeNumber,
@@ -127,7 +127,7 @@ function getDegreeRomanNumeral(degree: DegreeNumber, quality: ModeQuality): stri
 
 /** Gets the index of the tonic in the circle where C == 0, G == 1, etc */
 function getTonicIndex(tonic: Note): number {
-    return TONIC_NOTES.findIndex(n => n.number === tonic.number);
+    return COF_NOTES.findIndex(n => n.number === tonic.number);
 }
 
 /**

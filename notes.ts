@@ -6,6 +6,12 @@ export type Accidental = "#"|"b"|"";
 // Integer notation                              0    1     2    3     4    5    6     7    8     9    10    11
 export const STANDARD_NOTE_NAMES: NoteName[] = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 
+/**
+ * Pool of immutable note instances where the key is note name and octave.
+ * At most there will be 21 * number of octaves.
+ */
+const notePool: {[key: string]: Note}= {};
+
 type NoteInfo = {
     name: NoteName;
     alias: NoteName|"";
@@ -165,12 +171,6 @@ class NoteImpl implements Note
 }
 
 /**
- * Pool of immutable note instances where the key is note name and octave.
- * At most there will be 21 * number of octaves.
- */
-const notePool: {[key: string]: Note}= {};
-
-/**
  * Gets a note using integer notation
  * @param number Note number using integer notation where 0=C. Numbers over 11 and negative numbers will roll over and affect the octave.
  * @param octave The octave, default is 4
@@ -256,14 +256,21 @@ export function sortNotes(notes: Note[], root = notes[0]): Note[]
 }
 
 /**
- * Extracts an array of names from an array of notes
+ * Gets an array of names from an array of notes
  */
 export function getNoteNames(notes: Note[]): NoteName[] {
     return notes.map(n => n.name);
 }
 
 /**
- * Extracts an array of numbers from an array of notes
+ * Gets an array of formatted names (using formatAccidentals) from an array of notes
+ */
+export function getFormattedNoteNames(notes: Note[]): string[] {
+    return notes.map(n => n.formattedName);
+}
+
+/**
+ * Gets an array of note numbers from an array of notes
  */
 export function getNoteNumbers(notes: Note[]): number[] {
     return notes.map(n => n.number);
@@ -278,3 +285,6 @@ export function normalizeNoteName(noteName: NoteName): NoteName {
            noteName === "A#" ? "Bb" :
            noteName;
 }
+
+/** Standard notes in natural order starting with C */
+export const STANDARD_NOTES = STANDARD_NOTE_NAMES.map(n => getNote(n));
