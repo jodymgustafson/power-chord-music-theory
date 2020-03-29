@@ -1,6 +1,6 @@
 import { CircularList } from "./util/circular-list";
 import MusicScale, { normalizeMode, ModeName } from "./scales";
-import Note, { NoteName, getNotes, getNoteNames } from "./notes";
+import Note, { getNotes } from "./notes";
 
 export type ModeQuality = "M"|"m"|"d";
 export type DegreeNumber = 1|2|3|4|5|6|7;
@@ -15,18 +15,16 @@ export type FifthInfo = {
     degreeRoman: string
 }
 
-/** Tonic names in circle of fisths order beginning with C */
-export const tonicNotes = new CircularList<Note>(getNotes("C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"));
-/** Tonic notes in circle of fisths order beginning with C */
-export const tonicNames = new CircularList<NoteName>(getNoteNames(tonicNotes.getList()));
-/** Mode names in circle of fisths order beginning with lydian */
-export const circleModes: ModeName[] = ["lydian", "ionian", "mixolydian", "dorian", "aeolian", "phrygian", "locrian"];
-/** Name for each note in a scale */
-export const degreeNames: DegreeName[] = ["Tonic", "Supertonic", "Mediant", "Subdominant", "Dominant", "Submediant", "Leading Tone"];
+/** Tonic names in circle of fifths order beginning with C */
+export const TONIC_NOTES = new CircularList<Note>(getNotes("C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"));
+/** Mode names in circle of fifths order beginning with lydian */
+export const MODE_NAMES: ModeName[] = ["lydian", "ionian", "mixolydian", "dorian", "aeolian", "phrygian", "locrian"];
 
-const modeQualities = new CircularList<ModeQuality>(["M", "M", "M", "m", "m", "m", "d"]);
-const degreeNumbers = new CircularList<DegreeNumber>([1, 5, 2, 6, 3, 7, 4]);
-const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII"];
+/** Name for each note in a scale */
+const DEGREE_NAMES: DegreeName[] = ["Tonic", "Supertonic", "Mediant", "Subdominant", "Dominant", "Submediant", "Leading Tone"];
+const MODE_QUALITIES = new CircularList<ModeQuality>(["M", "M", "M", "m", "m", "m", "d"]);
+const DEGREE_NUMBERS = new CircularList<DegreeNumber>([1, 5, 2, 6, 3, 7, 4]);
+const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"];
 
 export default interface CircleOfFifths
 {
@@ -96,15 +94,15 @@ function getFifths(scale: MusicScale): FifthInfo[] {
 
 function getFifthInfo(index: number, tonicNumber: number, start: number, scale: MusicScale): FifthInfo {
     const position = tonicNumber + start + index;
-    const degreeNumber = degreeNumbers.itemAt(start + index);
-    const quality = modeQualities.itemAt(index);
+    const degreeNumber = DEGREE_NUMBERS.itemAt(start + index);
+    const quality = MODE_QUALITIES.itemAt(index);
 
     const info = {
-        note: scale.getNoteInScale(tonicNotes.itemAt(position)),
+        note: scale.getNoteInScale(TONIC_NOTES.itemAt(position)),
         position: position,
         quality: quality,
         degreeNumber: degreeNumber,
-        degreeName: degreeNames[degreeNumber - 1],
+        degreeName: DEGREE_NAMES[degreeNumber - 1],
         degreeRoman: getDegreeRomanNumeral(degreeNumber, quality)
     };
 
@@ -122,7 +120,7 @@ function getFifthInfo(index: number, tonicNumber: number, start: number, scale: 
  * @param quality Major, minor or diminished
  */
 function getDegreeRomanNumeral(degree: DegreeNumber, quality: ModeQuality): string {
-    const roman = romanNumerals[degree - 1];
+    const roman = ROMAN_NUMERALS[degree - 1];
     return quality === "d" ? roman.toLowerCase() + "°" :
            quality === "m" ? roman.toLowerCase() :
            roman;
@@ -130,12 +128,12 @@ function getDegreeRomanNumeral(degree: DegreeNumber, quality: ModeQuality): stri
 
 /** Gets the index of the tonic in the circle where C == 0, G == 1, etc */
 function getTonicIndex(tonic: Note): number {
-    return tonicNotes.findIndex(n => n.number === tonic.number);
+    return TONIC_NOTES.findIndex(n => n.number === tonic.number);
 }
 
 /**
  * Gets the number of the mode where lydian is 0, ionian is 1, etc.
  */
 function getModeNumber(mode: ModeName): number {
-    return circleModes.indexOf(normalizeMode(mode));
+    return MODE_NAMES.indexOf(normalizeMode(mode));
 }

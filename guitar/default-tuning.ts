@@ -20,7 +20,7 @@ export function getDefaultTuningGuitarLookup(): GuitarLookupService {
 }
 
 /** All barre positions by name and quality in tab order */
-const barrePositions = {
+const BARRE_POSITIONS = {
     "E": {
         //"": [-1, -1, 2, 1, 0, 0],
         "M": [0, 2, 2, 1, 0, 0],
@@ -57,7 +57,7 @@ const barrePositions = {
 };
 
 /** Open chords in tab order */
-const openChords: GuitarChordPositions = {
+const OPEN_CHORDS: GuitarChordPositions = {
     "D": [[-1, -1, 0, 2, 3, 2]],
     "G": [[3, 2, 0, 0, 0, 3]],
 
@@ -85,11 +85,11 @@ const openChords: GuitarChordPositions = {
 
 function buildGuitarChords(): GuitarChordPositions {
     // First copy all of the open chords
-    const allPositions: {[key: string]:number[][]} = Object.assign({}, openChords);
+    const allPositions: {[key: string]:number[][]} = Object.assign({}, OPEN_CHORDS);
 
     // Then build and add all of the barre chords
-    for (const rootName in barrePositions) {
-        const qualities = barrePositions[rootName];
+    for (const rootName in BARRE_POSITIONS) {
+        const qualities = BARRE_POSITIONS[rootName];
         for (const quality in qualities) {
             const positions = qualities[quality];
             const barreChord = getChord(rootName as NoteName, quality as ChordQuality);

@@ -1,18 +1,16 @@
-import Note, {  NoteName, Accidental, getNote, getNoteNames } from "./notes";
+import Note, { NoteName, Accidental, getNote } from "./notes";
 import { formatAccidentals } from ".";
 import Chord, { ChordQuality, getChord, NoteOrName } from "./chords";
 import * as cof from "./circle-of-fifths";
 
 export type ModeName = "lydian"|"M"|"major"|"ionian"|"mixolydian"|"dorian"|"m"|"minor"|"aeolian"|"phrygian"|"locrian";
-/** Mode names starting with ionian (major) */
-export const modes: ModeName[] = ["ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"];
 
 export type KeySignature = {
     accidental: Accidental;
     count: number;
 }
 
-// major/ionian intervals ;
+/** Scale intervals by mode name */
 const SCALE_INTERVALS: {[key: string]: number[]} = {
     lydian:     [ 0, 2, 4, 6, 7, 9, 11 ], // [2, 2, 2, 1, 2, 2, 1]
     ionian:     [ 0, 2, 4, 5, 7, 9, 11 ], // [2, 2, 1, 2, 2, 2, 1]
@@ -23,6 +21,16 @@ const SCALE_INTERVALS: {[key: string]: number[]} = {
     locrian:    [ 0, 1, 3, 5, 6, 8, 10 ]  // [2, 1, 2, 2, 1, 2, 2]
 };
 
+/** Mode name offsets to get chords in a scale */
+const OFFSETS_BY_MODE_NAME: {[key: string]: number} = {
+    "ionian": 0,
+    "dorian": 1,
+    "phrygian": 2,
+    "lydian": 3,
+    "mixolydian": 4,
+    "aeolian": 5,
+    "locrian": 6
+};
 
 export default interface MusicScale
 {
@@ -261,7 +269,7 @@ const scaleQualities: (ChordQuality|"")[] = ["", "m", "m", "", "", "m", "dim"];
  * @param scale The scale to get chords in
  */
 function getChordsInScale(scale: MusicScale): Chord[] {
-    const offset = modes.indexOf(scale.mode);
+    const offset = OFFSETS_BY_MODE_NAME[scale.mode];
 
     const chordsInScale = scale.notes.map((note, i) => {
         const quality = scaleQualities[(i + offset) % 7] || "M";
@@ -293,7 +301,7 @@ function getSignature(tonic: Note, mode: ModeName): KeySignature {
 
     // Get the index of the tonic without the accidental
     const tonicIdx = NON_ACCIDENTALS.indexOf(tonic.name.charAt(0) as NoteName) - 1;
-    const modeIdx = cof.circleModes.indexOf(mode);
+    const modeIdx = cof.MODE_NAMES.indexOf(mode);
 
     // This will be negative for flats, positive for sharps
     let accidentalCount = tonicIdx - modeIdx + 1;
