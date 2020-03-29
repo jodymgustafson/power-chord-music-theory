@@ -28,14 +28,13 @@ const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"];
 
 export default interface CircleOfFifths
 {
-    /**
-     * Gets the fifths in circle of fifths order, e.g. CM = F, C, G, D, A, E, B
-     */
+    /** Gets the scale of this instance */
+    readonly scale: MusicScale;
+
+    /** Gets the fifths in circle of fifths order, e.g. CM = F, C, G, D, A, E, B */
     readonly fifths: FifthInfo[];
 
-    /**
-     * Gets fifths in note natural order starting with the tonic, e.g. CM = C, D, E, F, G, A, B
-     */
+    /** Gets fifths in note natural order starting with the tonic, e.g. CM = C, D, E, F, G, A, B */
     readonly orderedFifths: FifthInfo[];
 }
 
@@ -45,7 +44,7 @@ class CircleOfFifthsImpl implements CircleOfFifths
     private _orderedFifths: FifthInfo[];
 
     constructor(readonly scale: MusicScale) {}
-v
+
     /**
      * Gets the fifths in circle of fifths order, e.g. CM = F, C, G, D, A, E, B
      */
