@@ -53,14 +53,12 @@ export default interface Note
 {
     /** Name of the note */
     readonly name: NoteName;
-    /** Another name for the note or "" is there is none; e.g C# is Db */
-    readonly alias: NoteName|"";
+    /** Gets the note that has the same pitch but with a different name. If there is none the note is returned.; e.g C# is Db */
+    readonly alias?: Note;
     /** Number of the note in integer notation where C=0 and B=11 */
     readonly number: number;
     /** Octave of the note */
     readonly octave: number;
-    /** Note of the alias */
-    readonly aliasNote: Note;
     /** Returns name with accidentals formatted */
     readonly formattedName: string;
     /** Gets the accidental of the note, or empty string */
@@ -110,9 +108,9 @@ export default interface Note
 class NoteImpl implements Note
 {
     readonly name: NoteName;
-    readonly alias: NoteName|"";
     readonly number: number;
     readonly octave: number;
+    readonly aliasName: NoteName|"";
 
     constructor(name: NoteName, octave = 4) {
         let noteInfo = NOTES_BY_NAME[name];
@@ -122,11 +120,11 @@ class NoteImpl implements Note
         this.octave = octave;
         this.name = noteInfo.name;
         this.number = noteInfo.number;
-        this.alias = noteInfo.alias as NoteName;
+        this.aliasName = noteInfo.alias;
     }
 
-    get aliasNote(): Note {
-        return this.alias ? getNote(this.alias, this.octave) : this;
+    get alias(): Note {
+        return this.aliasName ? getNote(this.aliasName, this.octave) : undefined;
     }
 
     get formattedName(): string {

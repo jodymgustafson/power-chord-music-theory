@@ -47,8 +47,11 @@ describe("When parse chords", () => {
     it("should get chord CM/G", () => {
         validateParseChord(parseChord("CM/G"), { root: "C", quality: "M", name: "C/G", bass: "G", inversionCount: 3, intervals: [0, 4, 7], notes: ["G", "C", "E"], alias: "B#/G" });
     });
-    it("should get chord Ddim/A", () => {
+    it("should get chord Ddim/Ab", () => {
         validateParseChord(parseChord("Ddim/Ab"), { root: "D", quality: "dim", name: "Ddim/Ab", bass: "Ab", inversionCount: 3, intervals: [0, 3, 6], notes: ["Ab", "D", "F"], alias: "Ddim/Ab" });
+    });
+    it("should get chord with alias bass name Ddim/G#", () => {
+        validateParseChord(parseChord("Ddim/G#"), { root: "D", quality: "dim", name: "Ddim/G#", bass: "G#", inversionCount: 3, intervals: [0, 3, 6], notes: ["Ab", "D", "F"], alias: "Ddim/G#" });
     });
     it("should get chord F#sus4/C#", () => {
         validateParseChord(parseChord("F#sus4/C#"), { root: "F#", quality: "sus4", name: "F#sus4/C#", bass: "C#", inversionCount: 3, intervals: [0, 5, 7], notes: ["C#", "F#", "B"], alias: "Gbsus4/Db" });
@@ -80,7 +83,7 @@ describe("When get chord inversions", () => {
 
 describe("When get a chord with an invalid bass note", () => {
     it("should throw an error", () => {
-        expect(() => parseChord("C/Fb")).toThrowError("Bass note 'Fb' is not a member of this chord");
+        expect(() => parseChord("C/F#")).toThrowError("Bass note 'F#' is not a member of this chord");
         expect(() => parseChord("Ddim/A")).toThrowError("Bass note 'A' is not a member of this chord");
         expect(() => parseChord("C#dim/F")).toThrowError("Bass note 'F' is not a member of this chord");
     });

@@ -255,8 +255,8 @@ function getNotesInScale(scale: MusicScale): Note[] {
  * @param scale The scale to get the note for
  */
 function getNoteInScale(note: Note, tonicNote: Note, signature: KeySignature): Note {
-    if (note.alias && note.accidental !== tonicNote.accidental && note.aliasNote.accidental === signature.accidental) {
-        note = note.aliasNote;
+    if (note.alias && note.accidental !== tonicNote.accidental && note.alias.accidental === signature.accidental) {
+        note = note.alias;
     }
     return note;
 }

@@ -2,7 +2,7 @@ import Note, { sortNotes, getNoteNames, getNotes, getNote } from "../notes";
 
 function validateNote(note: Note, expected: any): void {
     expect(note.name).toBe(expected.name);
-    expect(note.alias).toBe(expected.alias);
+    expect(note.alias ? note.alias.name : "").toBe(expected.alias);
     expect(note.number).toBe(expected.number);
     expect(note.octave).toBe(expected.octave);
 

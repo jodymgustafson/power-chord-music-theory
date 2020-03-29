@@ -57,6 +57,12 @@ export default interface Chord
     readonly isInverted: boolean;
 
     /**
+     * Checks if the chord contains a note
+     * @param note Note to check
+     */
+    hasNote(note: Note): boolean;
+
+    /**
      * Gets the chord for the specified inversion,
      * e.g. C-0(CEG), C-1(EGC), C-2(GCE)
      * @param inversion Inversion number
@@ -109,7 +115,7 @@ class ChordImpl implements Chord
         this.quality = quality || "M";
         this.bass = bass;
 
-        if (this.isInverted && this.notes.indexOf(bass) < 0) {
+        if (this.isInverted && !this.hasNote(bass)) {
             throw new Error(`Bass note '${bass.name}' is not a member of this chord`);
         }
 
@@ -173,6 +179,10 @@ class ChordImpl implements Chord
         return this.root.number === chord.root.number
             && this.quality === chord.quality
             && this.bass.number === chord.bass.number;
+    }
+
+    hasNote(note: Note): boolean {
+        return this.notes.findIndex(n => n.number === note.number) >= 0;
     }
 }
 
@@ -247,8 +257,8 @@ function getChordNotes(chord: Chord): Note[] {
     const notes = [root];
     for (let i = 1; i < intervals.length; i++) {
         let note = getNote((root.number + intervals[i]) % 12);
-        if (note.alias && note.accidental !== chord.accidental && note.aliasNote.accidental === chord.accidental) {
-            note = note.aliasNote;
+        if (note.alias && note.accidental !== chord.accidental && note.alias.accidental === chord.accidental) {
+            note = note.alias;
         }
         notes.push(note);
     }
