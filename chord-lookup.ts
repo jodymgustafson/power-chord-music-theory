@@ -14,25 +14,27 @@ export function getChordFromNotes(...notesOrNames: NoteName[] | Note[]): Chord |
         notes = (notesOrNames as Note[]).slice();
     }
 
-    // Remember the bass note before sorting
-    const bass = notes[0].name;
-    // Put into natural order
-    notes = sortNotes(notes);
+    if (notes.length > 0) {
+        // Remember the bass note before sorting
+        const bass = notes[0].name;
+        // Put into natural order
+        notes = sortNotes(notes);
 
-    for (let i = 0; i < notes.length; i++) {
-        // First get the intervals
-        const ints = getIntervals(notes);
-        const quality = lookupQualityByIntervals(ints);
-        if (quality !== undefined) {
-            // found it
-            return getChord(notes[0], quality, bass);
-        }
-        else {
-            // try next
-            notes = getNextPermutation(notes);
+        for (let i = 0; i < notes.length; i++) {
+            // First get the intervals
+            const ints = getIntervals(notes);
+            const quality = lookupQualityByIntervals(ints);
+            if (quality !== undefined) {
+                // found it
+                return getChord(notes[0], quality, bass);
+            }
+            else {
+                // try next
+                notes = getNextPermutation(notes);
+            }
         }
     }
-
+    
     // Not found
     return undefined;
 }

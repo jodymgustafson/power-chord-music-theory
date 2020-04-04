@@ -58,7 +58,11 @@ describe("When get chord from notes", () => {
         expect(getChordFromNotes("Ab", "Eb").name).toBe("Ab5");
     });
 
-    it("should get undefined", () => {
+    it("should get undefined for invalid chord", () => {
         expect(getChordFromNotes("A", "Ab")).toBeUndefined();
+    });
+
+    it("should get undefined for empty array", () => {
+        expect(getChordFromNotes()).toBeUndefined();
     });
 });

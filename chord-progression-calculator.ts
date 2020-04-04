@@ -90,7 +90,7 @@ class ChordProgressionCalculatorImpl implements ChordProgressionCalculator
  * @param scale The scale to use, must be either major or minor
  */
 export function getChordProgressionCalculator(scale: MusicScale): ChordProgressionCalculator {
-    if (scale.modeAlias !== "major" && scale.modeAlias !== "minor") {
+    if (scale.normalizedMode !== "ionian" && scale.normalizedMode !== "aeolian") {
         throw new Error("Only major and minor scales are supported");
     }
 
