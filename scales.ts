@@ -239,6 +239,9 @@ export function normalizeMode(mode: ModeName|""): ModeName {
         case "minor":
             return "aeolian";
         default:
+            if (!isFinite(OFFSETS_BY_MODE_NAME[mode])) {
+                throw new Error("Invlaid mode: " + mode);
+            }
             return mode;
     }
 }
