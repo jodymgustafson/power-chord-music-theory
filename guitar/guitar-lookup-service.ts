@@ -17,7 +17,7 @@ export default interface GuitarLookupService {
      */
     getNote(str: number, fret: number): Note;
 
-    /** 
+    /**
      * Gets the finger positions for each variation that match the chord root and quality.
      * @param name Name of the chord (A-G#)
      * @param quality Quality of the chord (e.g. ""=major, "m"=minor)
@@ -55,7 +55,7 @@ export class GuitarLookupServiceImpl implements GuitarLookupService
      * @param openNotes Notes that the strings are tuned to (from top to bottom, high to low)
      */
     constructor(private readonly chordPositionsMap: GuitarChordPositions, openNotes: Note[]) {
-        this.openNotes = openNotes
+        this.openNotes = openNotes;
     }
 
     /**
@@ -67,7 +67,7 @@ export class GuitarLookupServiceImpl implements GuitarLookupService
         return this.openNotes[str].transpose(fret);
     }
 
-    /** 
+    /**
      * Gets the finger positions for each variation that match the chord root and quality.
      * @param name Name of the chord (A-G#)
      * @param quality Quality of the chord (e.g. ""=major, "m"=minor)

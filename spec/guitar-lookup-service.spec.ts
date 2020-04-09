@@ -31,7 +31,7 @@ describe("When getChordTab", () => {
 });
 
 describe("When getChordTabs", () => {
-    let tabs = lookup.getChordTabs("C", "");
+    const tabs = lookup.getChordTabs("C", "");
     it("should get tab for C", () => expect(tabs[0]).toEqual([-1, 3, 2, 0, 1, 0]));
     it("should get tab for C-1", () => expect(tabs[1]).toEqual([-1, 3, 5, 5, 5, 3]));
     it("should get tab for C-2", () => expect(tabs[2]).toEqual([8, 10, 10, 9, 8, 8]));

@@ -6,14 +6,14 @@ export type ModeQuality = "M"|"m"|"d";
 export type DegreeNumber = 1|2|3|4|5|6|7;
 export type DegreeName = "Tonic"|"Supertonic"|"Mediant"|"Subdominant"|"Dominant"|"Submediant"|"Leading Tone"|"Subtonic";
 export type FifthInfo = {
-    note: Note,
+    note: Note;
     /** position in the circle of fifths, e.g. F=-1, C=0, G=1, etc */
-    position: number,
-    quality: ModeQuality,
-    degreeNumber: DegreeNumber,
-    degreeName: DegreeName,
-    degreeRoman: string
-}
+    position: number;
+    quality: ModeQuality;
+    degreeNumber: DegreeNumber;
+    degreeName: DegreeName;
+    degreeRoman: string;
+};
 
 /** Tonic names in circle of fifths order beginning with C */
 export const COF_NOTES = new CircularList<Note>(getNotes("C", "G", "D", "A", "E", "B", "F#", "C#", "Ab", "Eb", "Bb", "F"));
@@ -71,7 +71,7 @@ export function getCircleOfFifths(scale: MusicScale): CircleOfFifths {
 
 /**
  * Sorts fifths into natural order by note
- * @param fifths 
+ * @param fifths
  */
 function sortFifths(fifths: FifthInfo[]): FifthInfo[] {
     return fifths.sort((a, b) => a.degreeNumber - b.degreeNumber);

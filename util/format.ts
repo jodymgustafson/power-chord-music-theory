@@ -1,6 +1,6 @@
 /**
  * Converts accidentals in a string from ASCII (#|b) to extended (♭|♯)
- * @param text 
+ * @param text
  */
 export function formatAccidentals(text: string): string
 {
@@ -9,7 +9,7 @@ export function formatAccidentals(text: string): string
 
 /**
  * Converts accidentals in a string from extended (♭|♯) to ASCII (#|b)
- * @param text 
+ * @param text
  */
 export function unformatAccidentals(text: string): string
 {

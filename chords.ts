@@ -71,7 +71,7 @@ export default interface Chord
 
     /**
      * Gets the chord that is the specified number of half steps from this one
-     * @param steps 
+     * @param steps
      */
     transpose(steps: number): Chord;
 
@@ -119,7 +119,7 @@ class ChordImpl implements Chord
             throw new Error(`Bass note '${bass.name}' is not a member of this chord`);
         }
 
-        this.name = root.name + (quality === "M" ? "" : quality) + (this.isInverted ? ("/" + bass.name) : "")
+        this.name = root.name + (quality === "M" ? "" : quality) + (this.isInverted ? ("/" + bass.name) : "");
     }
     get aliasChord(): Chord {
         if (this.root.alias) {
@@ -199,7 +199,7 @@ export function getChord(root: NoteName, quality?: ChordQuality, bass?: NoteOrNa
  * @param quality Chord quality
  * @param bass An optional bass note to create an inverted chord
  */
-export function getChord(root: Note, quality?: ChordQuality, bass?:NoteOrName): Chord;
+export function getChord(root: Note, quality?: ChordQuality, bass?: NoteOrName): Chord;
 export function getChord(root: NoteOrName, quality: ChordQuality = "M", bass?: NoteOrName): Chord {
     if (typeof root === "string") {
         root = getNote(root);
@@ -220,10 +220,10 @@ export function parseChord(chord: string): Chord {
     const parts = /([A-G][#,b]?)([a-zA-Z]*\d?)?(\/[A-G][#,b]?)?/.exec(chord);
     if (parts && parts[1]) {
         const root = parts[1] as NoteName;
-        
+
         // Default quality is Major
         const quality = (parts[2] || "M") as ChordQuality;
-        
+
         // Slice to remove the slash
         const bass = (parts[3] ? parts[3].slice(1) : root) as NoteName;
 
@@ -244,7 +244,7 @@ export function getChordIntervals(quality: ChordQuality): number[] {
     return ints;
 }
 
-/** 
+/**
  * Gets the notes for the chord
  * @param name A chord
  * @param inversion Inversion of the chord
@@ -253,7 +253,7 @@ export function getChordIntervals(quality: ChordQuality): number[] {
 function getChordNotes(chord: Chord): Note[] {
     const root = chord.root;
     const intervals = getChordIntervals(chord.quality);
-    
+
     const notes = [root];
     for (let i = 1; i < intervals.length; i++) {
         let note = getNote((root.number + intervals[i]) % 12);

@@ -1,4 +1,4 @@
-import { FifthInfo, getCircleOfFifths } from "../circle-of-fifths"
+import { FifthInfo, getCircleOfFifths } from "../circle-of-fifths";
 import { getScale } from "../scales";
 
 function validateFifth(fifth: FifthInfo, expected: any): void {

@@ -8,7 +8,7 @@ export type ModeName = "lydian"|"major"|"ionian"|"mixolydian"|"dorian"|"minor"|"
 export type KeySignature = {
     accidental: Accidental;
     count: number;
-}
+};
 
 /** Scale intervals by mode name */
 const SCALE_INTERVALS: {[key: string]: number[]} = {
@@ -18,7 +18,7 @@ const SCALE_INTERVALS: {[key: string]: number[]} = {
     dorian:     [ 0, 2, 3, 5, 7, 9, 10 ], // [1, 2, 2, 2, 1, 2, 2]
     aeolian:    [ 0, 2, 3, 5, 7, 8, 10 ], // [2, 2, 2, 1, 2, 2, 1]
     phrygian:   [ 0, 1, 3, 5, 7, 8, 10 ], // [2, 2, 1, 2, 2, 1, 2]
-    locrian:    [ 0, 1, 3, 5, 6, 8, 10 ]  // [2, 1, 2, 2, 1, 2, 2]
+    locrian:    [ 0, 1, 3, 5, 6, 8, 10 ] //  [2, 1, 2, 2, 1, 2, 2]
 };
 
 /** Mode name offsets to get chords in a scale */
@@ -96,7 +96,6 @@ export default interface MusicScale
     toString(): string;
 }
 
-
 class MusicScaleImpl implements MusicScale
 {
     readonly tonic: Note;
@@ -116,9 +115,9 @@ class MusicScaleImpl implements MusicScale
         this.name = tonic.name + (
             this.mode === "major" ? "M" :
             this.mode === "minor" ? "m" :
-            `(${this.mode.slice(0,3)})`);
-        
-        this.modeAlias = 
+            `(${this.mode.slice(0, 3)})`);
+
+        this.modeAlias =
             this.mode === "ionian" ? "major" :
             this.mode === "major" ? "ionian" :
             this.mode === "aeolian" ? "minor" :
@@ -138,7 +137,7 @@ class MusicScaleImpl implements MusicScale
     }
 
     get notes(): Note[] {
-        return this._notes || (this._notes = getNotesInScale(this))
+        return this._notes || (this._notes = getNotesInScale(this));
     }
 
     get chords(): Chord[] {
@@ -156,11 +155,11 @@ class MusicScaleImpl implements MusicScale
      * Returns true if a note has a sharp accidental
      */
     get isSharp(): boolean {
-        return this.tonic.isSharp
+        return this.tonic.isSharp;
     }
 
     get isFlat(): boolean {
-        return this.tonic.isFlat
+        return this.tonic.isFlat;
     }
 
     getNoteInScale(note: Note): Note;
@@ -181,7 +180,7 @@ class MusicScaleImpl implements MusicScale
         return getChordInScale(chord, this);
     }
 
-    toString() {
+    toString(): string {
         return this.name;
     }
 
@@ -191,7 +190,7 @@ class MusicScaleImpl implements MusicScale
 
     isSameAs(scale: MusicScale): boolean {
         return this.tonic.number === scale.tonic.number
-            && (this.mode === scale.mode || this.modeAlias === scale.mode)
+            && (this.mode === scale.mode || this.modeAlias === scale.mode);
     }
 }
 
@@ -222,7 +221,7 @@ export function getScale(tonic: NoteOrName, mode: ModeName = "major"): MusicScal
 export function parseScale(scale: string): MusicScale {
     const re = /([A-G]{1}[#|b]?)([m,M]?)/.exec(scale);
     if (re && re[1]) {
-        return getScale(re[1] as NoteName, re[2] === "m" ? "minor" : "major")
+        return getScale(re[1] as NoteName, re[2] === "m" ? "minor" : "major");
     }
     return undefined;
 }
@@ -256,7 +255,7 @@ function getNotesInScale(scale: MusicScale): Note[] {
 
     const notes = intervals.map(i => {
         // Comnpute the next note from the tonic and interval
-        let note = tonicNote.transpose(i);
+        const note = tonicNote.transpose(i);
         // What should we call it in this scale?
         return getNoteInScale(note, tonicNote, scale.signature);
     });
@@ -288,7 +287,7 @@ function getChordsInScale(scale: MusicScale): Chord[] {
 
     const chordsInScale = scale.notes.map((note, i) => {
         const quality = scaleQualities[(i + offset) % 7] || "M";
-        return getChord(note.name, quality)
+        return getChord(note.name, quality);
     });
 
     return chordsInScale;
@@ -312,7 +311,7 @@ function getSignature(tonic: Note, mode: ModeName): KeySignature {
     // A tonic with an accidental will have the inverse number of accidentals as
     // the same tonic without the accidental.
     // E.g. F has 1 flat, F# has 6 sharps, Fb has 6 flats; 7-6=1, 7-1=6
-    let accidental = tonic.accidental
+    let accidental = tonic.accidental;
 
     // Get the index of the tonic without the accidental
     const tonicIdx = NON_ACCIDENTALS.indexOf(tonic.name.charAt(0) as NoteName) - 1;

@@ -85,7 +85,7 @@ const OPEN_CHORDS: GuitarChordPositions = {
 
 function buildGuitarChords(): GuitarChordPositions {
     // First copy all of the open chords
-    const allPositions: {[key: string]:number[][]} = Object.assign({}, OPEN_CHORDS);
+    const allPositions: {[key: string]: number[][]} = Object.assign({}, OPEN_CHORDS);
 
     // Then build and add all of the barre chords
     for (const rootName in BARRE_POSITIONS) {
@@ -104,10 +104,10 @@ function buildGuitarChords(): GuitarChordPositions {
 }
 
 /**
- * Takes a barre chord and finds all the 
- * @param rootNote 
- * @param quality 
- * @param positions 
+ * Takes a barre chord and finds all the
+ * @param rootNote
+ * @param quality
+ * @param positions
  */
 function addBarreChordPositions(guitarChords: GuitarChordPositions, barreChord: Chord, positions: number[]): void
 {
@@ -160,4 +160,4 @@ function getMinFret(chord: number[]): number
 // This contains a list of every chord mapped to finger positions
 const chordPositions = buildGuitarChords();
 
-const defaultTuningGuitarLookup = new GuitarLookupServiceImpl(chordPositions, DEFAULT_OPEN_NOTES); 
+const defaultTuningGuitarLookup = new GuitarLookupServiceImpl(chordPositions, DEFAULT_OPEN_NOTES);

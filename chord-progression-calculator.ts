@@ -1,3 +1,4 @@
+/* eslint-disable no-multi-spaces */
 import Chord from "./chords";
 import MusicScale from "./scales";
 
@@ -20,6 +21,9 @@ const minorProgressions = [
     [0, 6],                 // vii* => i
 ];
 
+/**
+ * Calculates chord progressions
+ */
 export default interface ChordProgressionCalculator
 {
     /** Gets the root chord for the progression */
@@ -34,7 +38,7 @@ export default interface ChordProgressionCalculator
      */
     getNextChords(chord: Chord): Chord[];
 
-    /** 
+    /**
      * Gets the chord number in the current key where the tonic is 0.
      * If the chord doesn't exist in the key -1 is returned.
      */
@@ -72,7 +76,7 @@ class ChordProgressionCalculatorImpl implements ChordProgressionCalculator
         const progs = this.progressions[num];
 
         // Build list of chords
-        let nextChords: Chord[] = [];
+        const nextChords: Chord[] = [];
         for (let i = 0; i < progs.length; i++) {
             nextChords.push(this.key.chords[progs[i]]);
         }

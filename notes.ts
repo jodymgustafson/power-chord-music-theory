@@ -16,7 +16,7 @@ type NoteInfo = {
     name: NoteName;
     alias: NoteName|"";
     number: number;
-}
+};
 
 const NOTES_BY_NAME: {[key: string]: NoteInfo} = {
     "B#": { name: "B#", alias: "C", number: 0 },
@@ -70,7 +70,7 @@ export default interface Note
     /** Returns true if a note has a flat accidental */
     readonly isFlat: boolean;
 
-    /** 
+    /**
      * Gets the note that is this note transposed by the specified amount
      * @param steps Number of half steps, can be positive or negative
      */
@@ -113,7 +113,7 @@ class NoteImpl implements Note
     readonly aliasName: NoteName|"";
 
     constructor(name: NoteName, octave = 4) {
-        let noteInfo = NOTES_BY_NAME[name];
+        const noteInfo = NOTES_BY_NAME[name];
         if (!noteInfo) {
             throw new Error(name + " is not a valid note name");
         }
@@ -197,7 +197,7 @@ export function getNote(nameOrNumber: (NoteName|number), octave = 4): Note {
     const key = noteName + octave;
     let note = notePool[key];
     if (!note) {
-        notePool[key] = note = new NoteImpl(noteName, octave)
+        notePool[key] = note = new NoteImpl(noteName, octave);
     }
     return note;
 }

@@ -34,7 +34,7 @@ export function getChordFromNotes(...notesOrNames: NoteName[] | Note[]): Chord |
             }
         }
     }
-    
+
     // Not found
     return undefined;
 }

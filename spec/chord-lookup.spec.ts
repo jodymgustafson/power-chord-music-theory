@@ -1,5 +1,5 @@
-import { getChordFromNotes } from "../chord-lookup"
-import { getNotes } from "../notes"
+import { getChordFromNotes } from "../chord-lookup";
+import { getNotes } from "../notes";
 
 describe("When get chord from notes", () => {
     it("should get C", () => {
@@ -9,7 +9,7 @@ describe("When get chord from notes", () => {
         expect(getChordFromNotes(...getNotes("G", "C", "E")).name).toBe("C/G");
     });
     it("should get C/E", () => {
-        expect(getChordFromNotes(...getNotes("E", "C","G")).name).toBe("C/E");
+        expect(getChordFromNotes(...getNotes("E", "C", "G")).name).toBe("C/E");
     });
 
     it("should get Am", () => {
