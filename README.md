@@ -11,7 +11,7 @@ Therefore to check if two notes have the same name and octave simply use the equ
 - If you want to check equality without regard to note name use the `equals()` method. For example, A#4 is the same as Bb4 even though they have different names.
     - `getNote("A#", 4).equals(getNote("Bb", 4))` => true
 - If you want to check equality without regard to note name or octave use the equalsIgnoreOctave() method.
-    - `getNote("A#", 5).equalsIgnoreCase(getNote("Bb", 4))` => true
+    - `getNote("A#", 5).equalsIgnoreOctave(getNote("Bb", 4))` => true
 - Other note methods
     - `transpose()` Gets the note that is this note transposed a number of steps up or down
 - Other functions available:
