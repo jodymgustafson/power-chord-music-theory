@@ -57,6 +57,10 @@ export default interface Note
     readonly alias?: Note;
     /** Number of the note in integer notation where C=0 and B=11 */
     readonly number: number;
+    /** MIDI number of the note where A0=21 and C4=60 */
+    readonly midiNumber: number;
+    /** Key number of the note where A0=1 and C4=40 */
+    readonly keyNumber: number;
     /** Octave of the note */
     readonly octave: number;
     /** Returns name with accidentals formatted */
@@ -121,6 +125,14 @@ class NoteImpl implements Note
         this.name = noteInfo.name;
         this.number = noteInfo.number;
         this.aliasName = noteInfo.alias;
+    }
+
+    get midiNumber(): number {
+        return this.octave * 12 + this.number + 12;
+    }
+
+    get keyNumber(): number {
+        return this.midiNumber - 20;
     }
 
     get alias(): Note {
