@@ -1,5 +1,5 @@
 import { NoteName } from "..";
-import Note, { sortNotes, getNoteNames, getNotes, getNote } from "../notes";
+import Note, { sortNotes, getNoteNames, getNotes, getNote, deserializeNote } from "../notes";
 
 describe("When get note by name", () => {
     it("should get note for C", () => validateNote(getNote("C"), { name: "C", alias: "B#", number: 0, octave: 4 }));
@@ -60,6 +60,17 @@ describe("When get computed note values", () => {
     it("should get values for D#2", () => validateComputedValues("D#", 2, 39, 19, "#"));
     it("should get values for Eb3", () => validateComputedValues("Eb", 3, 51, 31, "b"));
     it("should get values for A4", () => validateComputedValues("A", 4, 69, 49, ""));
+});
+
+describe("When deserizlize a note", () => {
+    const note = deserializeNote(JSON.stringify(getNote("D#", 5)));
+    it("should deserialize to D#5", () => {
+        validateNote(note, { name: "D#", alias: "Eb", number: 3, octave: 5 });
+        expect(note.midiNumber).toBe(75);
+        expect(note.keyNumber).toBe(55);
+        expect(note.accidental).toEqual("#");
+        expect(note.hasAccidental).toEqual(true);
+    });
 });
 
 function validateNote(note: Note, expected: any): void {

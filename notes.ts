@@ -49,10 +49,11 @@ const NOTES_BY_NAME: {[key: string]: NoteInfo} = {
  * To check equality simply use the equality operator.
  * If you want to check equality without regard to name use the equals() method.
  */
-export default interface Note
-{
+export default interface Note {
     /** Name of the note */
     readonly name: NoteName;
+    /** Octave of the note */
+    readonly octave: number;
     /** Gets the note that has the same pitch but with a different name. If there is none the note is returned.; e.g C# is Db */
     readonly alias?: Note;
     /** Number of the note in integer notation where C=0 and B=11 */
@@ -61,8 +62,6 @@ export default interface Note
     readonly midiNumber: number;
     /** Key number of the note where A0=1 and C4=40 */
     readonly keyNumber: number;
-    /** Octave of the note */
-    readonly octave: number;
     /** Returns name with accidentals formatted */
     readonly formattedName: string;
     /** Gets the accidental of the note, or empty string */
@@ -109,8 +108,7 @@ export default interface Note
 /**
  * The implementation of a Note
  */
-class NoteImpl implements Note
-{
+class NoteImpl implements Note {
     readonly name: NoteName;
     readonly number: number;
     readonly octave: number;
@@ -177,6 +175,10 @@ class NoteImpl implements Note
 
     toString(): string {
         return this.name + this.octave;
+    }
+
+    toJSON(): string {
+        return this.toString();
     }
 }
 
@@ -249,6 +251,14 @@ export function parseNote(note: string): Note {
         return getNote(re[1] as NoteName, octave);
     }
     return undefined;
+}
+
+/**
+ * Deserializes a note that was serialized to JSON
+ * @param value JSON value
+ */
+export function deserializeNote(value: string): Note {
+    return parseNote(value);
 }
 
 /**
