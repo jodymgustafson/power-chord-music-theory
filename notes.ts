@@ -102,7 +102,11 @@ export default interface Note {
      */
     isSameAs(note: Note): boolean;
 
-    toString(): string;
+    /**
+     * Convert to a string of the format [name][octave]
+     * @param formatAccidental If true the accidental will be formatted
+     */
+    toString(formatAccidental?: boolean): string;
 }
 
 /**
@@ -173,8 +177,8 @@ class NoteImpl implements Note {
         return this.equalsIgnoreOctave(note);
     }
 
-    toString(): string {
-        return this.name + this.octave;
+    toString(formatted = false): string {
+        return (formatted ? formatAccidentals(this.name) : this.name) + this.octave;
     }
 
     toJSON(): string {

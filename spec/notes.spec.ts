@@ -1,4 +1,4 @@
-import { NoteName } from "..";
+import { formatAccidentals, NoteName } from "..";
 import Note, { sortNotes, getNoteNames, getNotes, getNote, deserializeNote } from "../notes";
 
 describe("When get note by name", () => {
@@ -60,6 +60,14 @@ describe("When get computed note values", () => {
     it("should get values for D#2", () => validateComputedValues("D#", 2, 39, 19, "#"));
     it("should get values for Eb3", () => validateComputedValues("Eb", 3, 51, 31, "b"));
     it("should get values for A4", () => validateComputedValues("A", 4, 69, 49, ""));
+});
+
+describe("When format accidentals of a note", () => {
+    it("should format flat", () => expect(formatAccidentals("Ab")).toBe("A♭"));
+    it("should format sharp", () => expect(formatAccidentals("F#")).toBe("F♯"));
+    it("should not format", () => expect(formatAccidentals("C")).toBe("C"));
+    it("should format in toString(true)", () => expect(getNote("F#").toString(true)).toBe("F♯4"));
+    it("should not format in toString(false)", () => expect(getNote("D#").toString()).toBe("D#4"));
 });
 
 describe("When deserizlize a note", () => {
