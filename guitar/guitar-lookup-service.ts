@@ -1,7 +1,7 @@
 import Note, { NoteName } from "../notes";
-import { ChordQuality } from "../chords";
-
-export type GuitarChordPositions = { [key: string]: number[][] };
+import Chord, { ChordQuality, getChord } from "../chords";
+import { GuitarChordPositions } from "../util/build-guitar-chords";
+import { getChordFromNotes } from "../chord-lookup";
 
 /** Represents a guitar tab where the first number is the 6th string and the last is the first string */
 export type GuitarTab = number[];
@@ -41,6 +41,12 @@ export default interface GuitarLookupService {
      * @returns The number of chord variations
      */
     getChordVariationCount(name: NoteName, quality: ChordQuality|""): number;
+
+    /**
+     * Reverse lookup to get a chord from tab positions
+     * @param tab Fret positions in tab order
+     */
+    getChordFromTab(tab: GuitarTab): Chord | undefined;
 }
 
 /**
@@ -101,4 +107,13 @@ export class GuitarLookupServiceImpl implements GuitarLookupService
         const tabs = this.getChordTabs(name, quality);
         return tabs ? tabs.length : 0;
     }
+
+    /**
+     * Reverse lookup to get a chord from a tab
+     * @param tab Fret positions in tab order
+     */
+     getChordFromTab(tab: GuitarTab): Chord | undefined {
+         const notes = tab.map((fret, i) => this.getNote(i, fret));
+         return getChordFromNotes(...notes);
+     }
 }
