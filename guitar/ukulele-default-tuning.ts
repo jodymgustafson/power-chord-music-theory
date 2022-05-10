@@ -1,6 +1,6 @@
-import GuitarLookupService, { GuitarLookupServiceImpl } from "../guitar/guitar-lookup-service";
+import GuitarLookupService, { GuitarLookupServiceImpl } from "./guitar-lookup-service";
 import { getNote } from "../notes";
-import { BarreChordPositions, buildGuitarChords, GuitarChordPositions } from "../util/build-guitar-chords";
+import { BarreChordPositions, buildGuitarChords, GuitarChordPositions } from "./build-guitar-chords";
 
 // Note numbers of open strings in default tuning
 export const DEFAULT_OPEN_NOTES = [

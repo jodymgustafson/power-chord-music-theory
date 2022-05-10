@@ -1,4 +1,5 @@
-﻿import { getDefaultTuningGuitarLookup } from "../guitar/default-tuning";
+﻿import { GuitarChordPositions } from "../guitar/build-guitar-chords";
+import { getDefaultTuningGuitarLookup } from "../guitar/default-tuning";
 
 const lookup = getDefaultTuningGuitarLookup();
 
@@ -50,4 +51,24 @@ describe("When getChordVariationCount", () => {
     it("should get count for C dim", () => expect(lookup.getChordVariationCount("C", "dim")).toBe(1));
     it("should get count for C sus4", () => expect(lookup.getChordVariationCount("C", "sus4")).toBe(1));
     it("should get 0 for invalid", () => expect(lookup.getChordVariationCount("A", "aug")).toBe(0));
+});
+
+describe("When get notes from tab", () => {
+    it("should get C chord", () => expect(lookup.getNotes(lookup.getChordTab("C", "M", 0))).toEqual([]));
+});
+
+describe("When look up chord from tab", () => {
+
+});
+
+describe("When check all tabs", () => {
+    it("should find their chords", () => {
+        const positions = lookup["chordPositionsMap"] as GuitarChordPositions;
+        for (const note in positions) {
+            const tabs = positions[note];
+            for (const tab of tabs) {
+                expect(lookup.getChordFromTab(tab)?.name).toBe(note);
+            }
+        }
+    });
 });
