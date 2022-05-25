@@ -77,7 +77,7 @@ export class GuitarLookupServiceImpl implements GuitarLookupService
 
     getNotes(tab: GuitarTab): Note[] {
         // The string in getNote is in reverse order from tab order
-        const notes = tab.reverse().map((fret, i) => fret >= 0 ? this.getNote(i, fret) : undefined);
+        const notes = tab.slice().reverse().map((fret, i) => fret >= 0 ? this.getNote(i, fret) : undefined);
         // Put back in tab order
         return notes.reverse();
     }
