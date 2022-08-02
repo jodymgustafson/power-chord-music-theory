@@ -4,10 +4,10 @@ import { BarreChordPositions, buildGuitarChords, GuitarChordPositions } from "./
 
 // Note numbers of open strings in default tuning
 export const DEFAULT_OPEN_NOTES = [
-    getNote("G", 4),
-    getNote("C", 4),
-    getNote("E", 4),
     getNote("A", 4),
+    getNote("E", 4),
+    getNote("C", 4),
+    getNote("G", 4),
 ];
 
 /**
@@ -29,7 +29,6 @@ const BARRE_POSITIONS: BarreChordPositions = {
     "D": {
         "M": [2, 2, 2, 0],
         "m": [2, 2, 1, 0],
-        "7": [2, 0, 2, 0],
         "M7": [2, 2, 2, 4],
         "m7": [2, 2, 1, 3],
     },
