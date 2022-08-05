@@ -3,7 +3,11 @@ import Chord, { ChordQuality } from "../chords";
 import { GuitarChordPositions } from "./build-guitar-chords";
 import { getChordFromNotes } from "../chord-lookup";
 
-/** Represents a guitar tab where the first number is the 6th string and the last is the first string */
+/**
+ * Represents a guitar tab where the first number is the left-most string and the last is the right-most string.
+ * Open strings are denoted by 0, muted strings are denoted by -1.
+ * e.g. C on a 6-string is [-1, 3, 2, 0, 1, 0], C on a uke is [0, 0, 0, 3]
+ */
 export type GuitarTab = number[];
 
 /**

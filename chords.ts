@@ -29,7 +29,7 @@ export default interface Chord
 {
     /** Gets the root note of the chord */
     readonly root: Note;
-    /** Gets the qualit of the chord */
+    /** Gets the quality of the chord */
     readonly quality: ChordQuality;
     /** Gets the bass note of the chord */
     readonly bass: Note;
