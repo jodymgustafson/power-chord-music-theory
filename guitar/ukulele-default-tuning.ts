@@ -34,6 +34,7 @@ const BARRE_POSITIONS: BarreChordPositions = {
     },
     "E": {
         "m": [0, 4, 3, 2],
+        "7": [1, 2, 0, 2],
         "m7": [0, 2, 0, 2],
     },
     "F": {
