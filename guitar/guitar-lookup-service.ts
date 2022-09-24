@@ -1,9 +1,13 @@
 import Note, { NoteName } from "../notes";
-import { ChordQuality } from "../chords";
+import Chord, { ChordQuality } from "../chords";
+import { GuitarChordPositions } from "./build-guitar-chords";
+import { getChordFromNotes } from "../chord-lookup";
 
-export type GuitarChordPositions = { [key: string]: number[][] };
-
-/** Represents a guitar tab where the first number is the 6th string and the last is the first string */
+/**
+ * Represents a guitar tab where the first number is the left-most string and the last is the right-most string.
+ * Open strings are denoted by 0, muted strings are denoted by -1.
+ * e.g. C on a 6-string is [-1, 3, 2, 0, 1, 0], C on a uke is [0, 0, 0, 3]
+ */
 export type GuitarTab = number[];
 
 /**
@@ -11,11 +15,18 @@ export type GuitarTab = number[];
  */
 export default interface GuitarLookupService {
     /**
-     * Gets the note at the specified position
+     * Gets the note on a string at the specified fret position
      * @param str String number where 0 is the highest string
      * @param fret Fret number where 0 is open
      */
     getNote(str: number, fret: number): Note;
+
+    /**
+     * Gets the notes at the specified fret positions of a tab
+     * @param tab Fret numbers in tab order where 0 is open, -1 is muted
+     * @returns Array of notes matching the tab, any muted string will be undefined
+     */
+     getNotes(tab: GuitarTab): Note[];
 
     /**
      * Gets the finger positions for each variation that match the chord root and quality.
@@ -41,6 +52,12 @@ export default interface GuitarLookupService {
      * @returns The number of chord variations
      */
     getChordVariationCount(name: NoteName, quality: ChordQuality|""): number;
+
+    /**
+     * Reverse lookup to get a chord from tab positions
+     * @param tab Fret positions in tab order
+     */
+    getChordFromTab(tab: GuitarTab): Chord | undefined;
 }
 
 /**
@@ -58,47 +75,37 @@ export class GuitarLookupServiceImpl implements GuitarLookupService
         this.openNotes = openNotes;
     }
 
-    /**
-     * Gets the note at the specified position
-     * @param str String number where 0 is the highest string
-     * @param fret Fret number where 0 is open
-     */
     getNote(str: number, fret: number): Note {
         return this.openNotes[str].transpose(fret);
     }
 
-    /**
-     * Gets the finger positions for each variation that match the chord root and quality.
-     * @param name Name of the chord (A-G#)
-     * @param quality Quality of the chord (e.g. ""=major, "m"=minor)
-     * @return Array of tabs
-     */
+    getNotes(tab: GuitarTab): Note[] {
+        // The string in getNote is in reverse order from tab order
+        const notes = tab.slice().reverse().map((fret, i) => fret >= 0 ? this.getNote(i, fret) : undefined);
+        // Put back in tab order
+        return notes.reverse();
+    }
+
     getChordTabs(name: NoteName, quality: ChordQuality|""): GuitarTab[] {
         if (quality === "M") quality = "";
         return this.chordPositionsMap[name + quality];
     }
 
-    /**
-     * Gets the finger positions that match the chord root and quality and variation.
-     * @param name Name of the chord (A-G#)
-     * @param quality Quality of the chord (e.g. "M"=major, "m"=minor, etc)
-     * @param variation Chord variation
-     * @return Finger positions in guitar tab order, or undefined if not a valid chord
-     */
     getChordTab(name: NoteName, quality: ChordQuality|"", variation: number): GuitarTab | undefined {
         //console.log("guitar chord: " + name + quality + variation);
         const chords = this.chordPositionsMap[name + ((quality === "M") ? "" : quality)];
         return (chords && chords[variation] ? chords[variation].slice() : undefined);
     }
 
-    /**
-     * Gets the number of variations for a chord
-     * @param name Name of the chord (A-G#)
-     * @param quality Quality of the chord (e.g. "M"=major, "m"=minor, etc)
-     * @returns The number of chord variations
-     */
     getChordVariationCount(name: NoteName, quality: ChordQuality|""): number {
         const tabs = this.getChordTabs(name, quality);
         return tabs ? tabs.length : 0;
     }
+
+     getChordFromTab(tab: GuitarTab): Chord | undefined {
+        let notes = this.getNotes(tab);
+        // Remove undefined and duplicates
+        notes = notes.filter((n, i) => n && notes.findIndex(n1 => n1?.isSameAs(n)) === i);
+        return getChordFromNotes(...notes);
+     }
 }

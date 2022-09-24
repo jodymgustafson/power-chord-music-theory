@@ -1,6 +1,6 @@
-import { NoteName, getNote } from "../notes";
-import Chord, { ChordQuality, getChord } from "../chords";
-import GuitarLookupService, { GuitarChordPositions, GuitarLookupServiceImpl } from "./guitar-lookup-service";
+import { getNote } from "../notes";
+import { BarreChordPositions, buildGuitarChords, GuitarChordPositions } from "./build-guitar-chords";
+import GuitarLookupService, { GuitarLookupServiceImpl } from "./guitar-lookup-service";
 
 // Note numbers of open strings in default tuning
 export const DEFAULT_OPEN_NOTES = [
@@ -20,7 +20,7 @@ export function getDefaultTuningGuitarLookup(): GuitarLookupService {
 }
 
 /** All barre positions by name and quality in tab order */
-const BARRE_POSITIONS = {
+const BARRE_POSITIONS: BarreChordPositions = {
     "E": {
         //"": [-1, -1, 2, 1, 0, 0],
         "M": [0, 2, 2, 1, 0, 0],
@@ -57,7 +57,7 @@ const BARRE_POSITIONS = {
 };
 
 /** Open chords in tab order */
-const OPEN_CHORDS: GuitarChordPositions = {
+const OPEN_POSITIONS: GuitarChordPositions = {
     "D": [[-1, -1, 0, 2, 3, 2]],
     "G": [[3, 2, 0, 0, 0, 3]],
 
@@ -79,85 +79,7 @@ const OPEN_CHORDS: GuitarChordPositions = {
     "Dsus4": [[-1, -1, 0, 2, 3, 3]]
 };
 
-///////////////////////////////////////////////////////////////////////
-// Internal functions
-///////////////////////////////////////////////////////////////////////
-
-function buildGuitarChords(): GuitarChordPositions {
-    // First copy all of the open chords
-    const allPositions: {[key: string]: number[][]} = Object.assign({}, OPEN_CHORDS);
-
-    // Then build and add all of the barre chords
-    for (const rootName in BARRE_POSITIONS) {
-        const qualities = BARRE_POSITIONS[rootName];
-        for (const quality in qualities) {
-            const positions = qualities[quality];
-            const barreChord = getChord(rootName as NoteName, quality as ChordQuality);
-            addBarreChordPositions(allPositions, barreChord, positions);
-        }
-    }
-
-    sortGuitarChords(allPositions);
-    //console.log("Guitar chords: ", allPositions);
-
-    return allPositions;
-}
-
-/**
- * Takes a barre chord and finds all the
- * @param rootNote
- * @param quality
- * @param positions
- */
-function addBarreChordPositions(guitarChords: GuitarChordPositions, barreChord: Chord, positions: number[]): void
-{
-    for (let fret = 0; fret < 12; fret++) {
-        // Get next chord down
-        const chord = barreChord.transpose(fret);
-        let chords: number[][] = guitarChords[chord.name];
-        if (!chords) {
-            // The chord family doesn't exist yet so add it
-            chords = guitarChords[chord.name] = [];
-        }
-        const newPositions = moveBarreChord(positions, fret);
-        chords.push(newPositions);
-    }
-}
-
-function moveBarreChord(positions: number[], amount: number): number[]
-{
-    const result: number[] = [];
-    for (let i = 0; i < positions.length; i++) {
-        const pos = positions[i];
-        result.push(pos >= 0 ? (pos + amount) : -1);
-    }
-    return result;
-}
-
-function sortGuitarChords(guitarChords: GuitarChordPositions): void
-{
-    for (const name in guitarChords) {
-        const chords: number[][] = guitarChords[name];
-        // sort the chords from the top of the neck to the bottom
-        chords.sort((a: number[], b: number[]) => {
-            return getMinFret(a) - getMinFret(b);
-        });
-    }
-}
-
-function getMinFret(chord: number[]): number
-{
-    let min = Number.MAX_VALUE;
-    for (let i = 0; i < chord.length; i++) {
-        if (chord[i] === 0) return 0;
-        if (chord[i] > 0) {
-            min = Math.min(chord[i], min);
-        }
-    }
-    return min;
-}
-
 // This contains a list of every chord mapped to finger positions
-const chordPositions = buildGuitarChords();
+const chordPositions = buildGuitarChords(OPEN_POSITIONS, BARRE_POSITIONS);
 
 const defaultTuningGuitarLookup = new GuitarLookupServiceImpl(chordPositions, DEFAULT_OPEN_NOTES);

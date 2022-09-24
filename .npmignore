@@ -1,6 +1,7 @@
 *.tgz
 **/*.ts
 !**/*.d.ts
+**/*.js.map
 node_modules
 spec
 .git

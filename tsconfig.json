@@ -3,7 +3,7 @@
         "target": "es2015",
         "module": "commonjs",
         "allowJs": false,
-        "sourceMap": false,
+        "sourceMap": true,
         "declaration": true
     }
 }
