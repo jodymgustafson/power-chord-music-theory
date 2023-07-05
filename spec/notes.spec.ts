@@ -1,5 +1,5 @@
 import { formatAccidentals, NoteName } from "..";
-import Note, { sortNotes, getNoteNames, getNotes, getNote, deserializeNote } from "../notes";
+import Note, { sortNotes, getNoteNames, getNotes, getNote, deserializeNote, normalizeNoteName, StandardNoteName } from "../notes";
 
 describe("When get note by name", () => {
     it("should get note for C", () => validateNote(getNote("C"), { name: "C", alias: "B#", number: 0, octave: 4 }));
@@ -78,6 +78,16 @@ describe("When deserizlize a note", () => {
         expect(note.keyNumber).toBe(55);
         expect(note.accidental).toEqual("#");
         expect(note.hasAccidental).toEqual(true);
+    });
+});
+
+describe("When normalize note names", () => {
+    const noteNames: NoteName[] =           ["C","C#","Db","D","D#","Eb","E","E#","Fb","F","F#","Gb","G","G#","Ab","A","A#","Bb","B","B#","Cb"];
+    const normalNames: StandardNoteName[] = ["C","C#","C#","D","Eb","Eb","E","F", "E", "F","F#","F#","G","Ab","Ab","A","Bb","Bb","B","C", "B"];
+    it("should get normalized name", () => {
+        for (let i = 0; i < noteNames.length; i++) {
+            expect(normalizeNoteName(noteNames[i])).toBe(normalNames[i]);
+        }
     });
 });
 

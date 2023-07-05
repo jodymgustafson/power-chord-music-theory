@@ -1,10 +1,11 @@
 import { formatAccidentals } from "./util/format";
 
 export type NoteName = "C"|"C#"|"Db"|"D"|"D#"|"Eb"|"E"|"E#"|"Fb"|"F"|"F#"|"Gb"|"G"|"G#"|"Ab"|"A"|"A#"|"Bb"|"B"|"B#"|"Cb";
+export type StandardNoteName = "C"|"C#"|"D"|"Eb"|"E"|"F"|"F#"|"G"|"Ab"|"A"|"Bb"|"B";
 export type Accidental = "#"|"b"|"";
 
 // Integer notation                              0    1     2    3     4    5    6     7    8     9    10    11
-export const STANDARD_NOTE_NAMES: NoteName[] = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+export const STANDARD_NOTE_NAMES: StandardNoteName[] = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 
 /**
  * Pool of immutable note instances where the key is note name and octave.
@@ -45,7 +46,7 @@ const NOTES_BY_NAME: {[key: string]: NoteInfo} = {
 /**
  * Defines a musical note.
  * Notes can be retrieved by calling getNote().
- * Notes are immutable and sigletons by name and octave.
+ * Notes are immutable and singletons by name and octave.
  * To check equality simply use the equality operator.
  * If you want to check equality without regard to name use the equals() method.
  */
@@ -304,9 +305,13 @@ export function getNoteNumbers(notes: Note[]): number[] {
 export function normalizeNoteName(noteName: NoteName): NoteName {
     return noteName === "Db" ? "C#" :
            noteName === "D#" ? "Eb" :
+           noteName === "E#" ? "F" :
+           noteName === "Fb" ? "E" :
            noteName === "Gb" ? "F#" :
            noteName === "G#" ? "Ab" :
            noteName === "A#" ? "Bb" :
+           noteName === "B#" ? "C" :
+           noteName === "Cb" ? "B" :
            noteName;
 }
 
