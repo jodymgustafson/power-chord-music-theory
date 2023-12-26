@@ -11,9 +11,11 @@ export type ModeName = "lydian" |
     "locrian";
 
 export type ScaleName = ModeName |
-    "pentatonic" |
-    "blues" | "blues_M" |
-    "blues_m";
+    "diatonic" |
+    "pentatonic" | "pent_M" |
+    "pent_m" |
+    "blues" | "blues_m" |
+    "blues_M";
 
 export type KeySignature = {
     accidental: Accidental;
@@ -31,7 +33,8 @@ const SCALE_INTERVALS: { [key: string]: number[] } = {
     locrian:    [0, 1, 3, 5, 6, 8, 10], // [2, 1, 2, 2, 1, 2, 2]
     blues_M:    [0, 2, 3, 4, 7, 9],     // [2, 1, 1, 3, 2, 3]
     blues_m:    [0, 3, 5, 6, 7, 10],    // [3, 2, 1, 1, 1, 3]
-    pentatonic: [0, 2, 4, 7, 9],        // [2, 2, 3, 2, 3]
+    pent_M:     [0, 2, 4, 7, 9],        // [2, 2, 3, 2, 3]
+    pent_m:     [0, 3, 5, 7, 10],       // [3, 2, 2, 3, 2]
 };
 
 export interface MusicScale {
@@ -192,28 +195,14 @@ export abstract class AbstractMusicScale implements MusicScale {
 }
 
 /**
- * Normalizes a scale name.
- * E.g. major => ionian, minor => aeolian, blues => blues_M
- */
-// export function normalizeScale(mode: ScaleName | ""): ScaleName {
-//     switch (mode) {
-//         case "blues_M":
-//             return "blues";
-//         case "blues":
-//         case "blues_m":
-//         case "pentatonic":
-//             return mode;
-//         default:
-//             return normalizeMode(mode as ModeName);
-//     }
-// }
-
-/**
  * Gets all of the notes in a scale with the specified root
  * @param scale The scale to get notes for
  */
 function getNotesInScale(scale: MusicScale): Note[] {
     const intervals = SCALE_INTERVALS[scale.normalizedMode];
+    if (!intervals) {
+        throw new Error("Invalid scale: " + scale.name);
+    }
     const tonicNote = scale.tonic;
 
     const notes = intervals.map(i => {

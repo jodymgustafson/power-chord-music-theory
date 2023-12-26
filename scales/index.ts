@@ -1,8 +1,9 @@
 import { NoteOrName } from "../chords";
 import Note, { NoteName, getNote } from "../notes";
-import { BluesScale } from "./blues-scales";
-import { DiatonicMusicScale } from "./diatonic-scales";
+import { BluesScale } from "./blues-scale";
+import { DiatonicMusicScale } from "./diatonic-scale";
 import { MusicScale, ModeName, ScaleName } from "./music-scale";
+import { PentatonicScale } from "./pentatonic-scale";
 
 /**
  * Gets an instance of a scale
@@ -23,6 +24,8 @@ export function getScale(tonic: NoteOrName, mode: ScaleName = "major"): MusicSca
 
     if (mode.indexOf("blues") === 0)
         return new BluesScale(tonic, mode === "blues_M" ? "major" : "minor");
+    else if (mode.indexOf("pent") === 0)
+        return new PentatonicScale(tonic, mode === "pent_m" ? "minor" : "major");
 
     return new DiatonicMusicScale(tonic, mode as ModeName);
 }
