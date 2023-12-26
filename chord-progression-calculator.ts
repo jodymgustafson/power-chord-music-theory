@@ -1,6 +1,6 @@
 /* eslint-disable no-multi-spaces */
 import Chord from "./chords";
-import MusicScale from "./scales";
+import { MusicScale } from "./scales/music-scale";
 
 const majorProgressions = [
     [0, 1, 2, 3, 4, 5, 6],  // I => any

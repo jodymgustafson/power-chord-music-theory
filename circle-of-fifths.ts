@@ -1,6 +1,6 @@
 import { CircularList } from "./util/circular-list";
-import MusicScale, { normalizeMode, ModeName } from "./scales";
 import Note, { getNotes } from "./notes";
+import { ModeName, MusicScale } from ".";
 
 export type ModeQuality = "M"|"m"|"d";
 export type DegreeNumber = 1|2|3|4|5|6|7;
@@ -135,4 +135,23 @@ function getTonicIndex(tonic: Note): number {
  */
 function getModeNumber(mode: ModeName): number {
     return MODE_NAMES.indexOf(normalizeMode(mode));
+}
+
+/**
+ * Normalizes a mode name to one of the seven default mode names.
+ * E.g. major => ionian, minor => aeolian
+ */
+export function normalizeMode(mode: ModeName | ""): ModeName {
+    switch (mode) {
+        case "":
+        case "major":
+            return "ionian";
+        case "minor":
+            return "aeolian";
+        default:
+            if (MODE_NAMES.indexOf(mode) < 0) {
+                throw new Error("Invalid mode: " + mode);
+            }
+            return mode;
+    }
 }

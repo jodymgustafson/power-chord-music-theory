@@ -4,7 +4,7 @@ export type NoteName = "C"|"C#"|"Db"|"D"|"D#"|"Eb"|"E"|"E#"|"Fb"|"F"|"F#"|"Gb"|"
 export type StandardNoteName = "C"|"C#"|"D"|"Eb"|"E"|"F"|"F#"|"G"|"Ab"|"A"|"Bb"|"B";
 export type Accidental = "#"|"b"|"";
 
-// Integer notation                              0    1     2    3     4    5    6     7    8     9    10    11
+// Integer notation                                      0    1     2    3     4    5    6     7    8     9    10    11
 export const STANDARD_NOTE_NAMES: StandardNoteName[] = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 
 /**

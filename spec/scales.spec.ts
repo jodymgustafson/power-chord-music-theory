@@ -1,14 +1,15 @@
-import MusicScale, { parseScale, getScale } from "../scales";
+import { parseScale, getScale } from "../scales";
 import { parseChord, getChord } from "../chords";
+import { MusicScale } from "../scales/music-scale";
 
 function validateScale(scale: MusicScale, expected: any): void {
-    expect(scale.tonic.name).toBe(expected.tonic);
-    expect(scale.mode).toBe(expected.mode);
-    expect(scale.modeAlias).toBe(expected.modeAlias);
-    expect(scale.name).toBe(expected.name);
-    expect(scale.signature).toEqual(expected.signature, "signature");
-    expect(scale.chords.map(c => c.name)).toEqual(expected.chords, "chords");
-    expect(scale.notes.map(c => c.name)).toEqual(expected.notes, "notes");
+    expect(scale.tonic.name).withContext("tonic").toBe(expected.tonic);
+    expect(scale.mode).withContext("mode").toBe(expected.mode);
+    expect(scale.modeAlias).withContext("modeAlias").toBe(expected.modeAlias);
+    expect(scale.name).withContext("name").toBe(expected.name);
+    expect(scale.signature).withContext("signature").toEqual(expected.signature);
+    expect(scale.chords.map(c => c.name)).withContext("chords").toEqual(expected.chords);
+    expect(scale.notes.map(c => c.name)).withContext("notes").toEqual(expected.notes);
 }
 
 describe("When get scale", () => {
@@ -78,6 +79,17 @@ describe("When get scale", () => {
         chords: ["E#", "Gm", "Am", "A#", "B#", "Dm", "Edim"],
         signature: { accidental: "#", count: 3 } }));
 
+    it("should get scale of C major blues", () => validateScale(getScale("C", "blues_M"), {
+        tonic: "C", mode: "major", name: "CM Blues", modeAlias: "",
+        notes: ["C", "D", "Eb", "E", "G", "A"],
+        chords: [],
+        signature: { accidental: "b", count: 1 } }));    
+
+    it("should get scale of C minor blues", () => validateScale(getScale("C", "blues_m"), {
+        tonic: "C", mode: "minor", name: "Cm Blues", modeAlias: "",
+        notes: ["C", "Eb", "F", "Gb", "G", "Bb"],
+        chords: [],
+        signature: { accidental: "b", count: 3 } }));    
 });
 
 describe("When using parseKey", () => {

@@ -6,8 +6,9 @@ import { getChordFromNotes } from "./chord-lookup";
 import GuitarLookupService, { GuitarTab } from "./guitar/guitar-lookup-service";
 import { getDefaultTuningGuitarLookup } from "./guitar/default-tuning";
 import { formatAccidentals, unformatAccidentals } from "./util/format";
-import MusicScale, { KeySignature, ModeName, parseScale, getScale } from "./scales";
+import { parseScale, getScale } from "./scales";
 import { getDefaultTuningUkuleleLookup } from "./guitar/ukulele-default-tuning";
+import { MusicScale, KeySignature, ModeName } from "./scales/music-scale";
 
 export {
     NoteName, Note, getNote, getNotes, getFormattedNoteNames, parseNote, deserializeNote,
