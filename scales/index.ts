@@ -1,10 +1,12 @@
 import { NoteOrName } from "../chords";
-import { MODE_NAMES, normalizeMode } from "../circle-of-fifths";
+import { MODE_NAMES } from "../circle-of-fifths";
 import Note, { NoteName, getNote } from "../notes";
 import { BluesMode, BluesScale } from "./blues-scale";
 import { DiatonicMusicScale } from "./diatonic-scale";
-import { MusicScale, ModeName, ScaleName } from "./music-scale";
+import { ModeName, MusicScale, ScaleName } from "./music-scale";
 import { PentatonicMode, PentatonicScale } from "./pentatonic-scale";
+
+const scaleCache: { [key: string]: MusicScale } = {};
 
 /**
  * Gets an instance of a diatonic scale
@@ -35,17 +37,26 @@ export function getScale(tonic: NoteOrName, scaleOrMode: ScaleName|ModeName = "d
         scaleOrMode = "diatonic";
     }
 
-    if (scaleOrMode === "diatonic") {
-        return new DiatonicMusicScale(tonic, mode);
-    }
-    else if (scaleOrMode === "blues") {
-        return new BluesScale(tonic, mode as BluesMode);
-    }
-    else if (scaleOrMode === "pentatonic") {
-        return new PentatonicScale(tonic, mode as PentatonicMode);
+    const cacheKey = tonic.name + scaleOrMode + mode;
+    let scale = scaleCache[cacheKey];
+    if (!scale) {
+        if (scaleOrMode === "diatonic") {
+            scale = new DiatonicMusicScale(tonic, mode);
+        }
+        else if (scaleOrMode === "blues") {
+            scale = new BluesScale(tonic, mode as BluesMode);
+        }
+        else if (scaleOrMode === "pentatonic") {
+            scale = new PentatonicScale(tonic, mode as PentatonicMode);
+        }
+        else {
+            throw new Error("Invalid scale name: " + scaleOrMode);
+        }
+
+        scaleCache[cacheKey] = scale;
     }
 
-    throw new Error("Invalid scale name: " + scaleOrMode);
+    return scale;
 }
 
 /**

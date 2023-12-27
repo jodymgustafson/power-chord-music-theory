@@ -1,14 +1,16 @@
 import Chord from "../chords";
 import Note from "../notes";
-import { AbstractMusicScale, KeySignature, ModeName, ScaleName } from "./music-scale";
+import { AbstractMusicScale, KeySignature, ModeName } from "./music-scale";
 
 export type BluesMode = "major" | "minor";
-// type BluesSignature = {
-//     [key: BluesMode]: {
-//         [note: NoteName]: KeySignature
-//     }
-// }
-const BLUES_SIGNATURES = {
+
+/** Scale intervals by mode name */
+const SCALE_INTERVALS: { [key: string]: number[] } = {
+    major:    [0, 2, 3, 4, 7, 9],     // [2, 1, 1, 3, 2, 3]
+    minor:    [0, 3, 5, 6, 7, 10],    // [3, 2, 1, 1, 1, 3]
+};
+
+const BLUES_SIGNATURES: { [key in BluesMode]: KeySignature[] } = {
     "major": [
         { accidental: "b", count: 1 }, // C
         { accidental: "#", count: 4 }, // C#
@@ -42,6 +44,10 @@ const BLUES_SIGNATURES = {
 export class BluesScale extends AbstractMusicScale {
     constructor(tonic: Note, mode: BluesMode = "minor") {
         super(tonic, mode);
+
+        if (!SCALE_INTERVALS[mode]) {
+            throw new Error("Invalid mode for blues scale: " + mode);
+        }
     }
 
     protected getName(): string {
@@ -54,6 +60,10 @@ export class BluesScale extends AbstractMusicScale {
 
     protected getChordsInScale(): Chord[] {
         return [];
+    }
+
+    protected getIntervals(): number[] {
+        return SCALE_INTERVALS[this.mode];
     }
 
     /** @override */
