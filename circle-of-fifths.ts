@@ -1,6 +1,6 @@
 import { CircularList } from "./util/circular-list";
 import Note, { getNotes } from "./notes";
-import { ModeName, MusicScale } from ".";
+import { ModeName, MusicScale } from "./scales/music-scale";
 
 export type ModeQuality = "M"|"m"|"d";
 export type DegreeNumber = 1|2|3|4|5|6|7;

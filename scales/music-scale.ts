@@ -2,6 +2,11 @@ import { formatAccidentals } from "..";
 import Chord, { NoteOrName } from "../chords";
 import Note, { Accidental, NoteName, getNote } from "../notes";
 
+export type ScaleName = 
+    "diatonic" |
+    "pentatonic" |
+    "blues";
+
 export type ModeName = "lydian" |
     "major" | "ionian" |
     "mixolydian" |
@@ -10,20 +15,17 @@ export type ModeName = "lydian" |
     "phrygian" |
     "locrian";
 
-export type ScaleName = ModeName |
-    "diatonic" |
-    "pentatonic" | "pent_M" |
-    "pent_m" |
-    "blues" | "blues_m" |
-    "blues_M";
-
 export type KeySignature = {
     accidental: Accidental;
     count: number;
 };
 
+type ScaleInterval = {
+    [key: string]: number[];
+};
+
 /** Scale intervals by mode name */
-const SCALE_INTERVALS: { [key: string]: number[] } = {
+const SCALE_INTERVALS: ScaleInterval = {
     lydian:     [0, 2, 4, 6, 7, 9, 11], // [2, 2, 2, 1, 2, 2, 1]
     ionian:     [0, 2, 4, 5, 7, 9, 11], // [2, 2, 1, 2, 2, 2, 1]
     mixolydian: [0, 2, 4, 5, 7, 9, 10], // [2, 1, 2, 2, 2, 1, 2]
@@ -43,7 +45,7 @@ export interface MusicScale {
     /** The mode of the scale */
     readonly mode: ModeName;
     /** The normalized mode of the scale (major => ionian, minor => aeolian) */
-    readonly normalizedMode: ScaleName;
+    readonly normalizedMode: ModeName;
     /** Gets the name of the scale */
     readonly name: string;
     /** Gets name with accidentals formatted */
@@ -105,7 +107,7 @@ export abstract class AbstractMusicScale implements MusicScale {
     readonly modeAlias: "" | ModeName;
     readonly tonic: Note;
     readonly mode: ModeName;
-    readonly normalizedMode: ScaleName;
+    readonly normalizedMode: ModeName;
     
     protected _notes: Note[];
     protected _chords: Chord[];
@@ -114,16 +116,19 @@ export abstract class AbstractMusicScale implements MusicScale {
     constructor(tonic: Note, mode: ModeName = "major") {
         this.tonic = tonic;
         this.mode = mode;
-        this.normalizedMode = this.getNormalizeMode();
+        this.normalizedMode = this.getNormalizedMode();
         this.name = this.getName();
         this.modeAlias = this.getModeAlias();
     }
 
     protected abstract getName(): string;
     protected abstract getModeAlias(): "" | ModeName;
-    protected abstract getNormalizeMode(): ScaleName;
     protected abstract getChordsInScale(): Chord[];
     protected abstract getSignature(): KeySignature;
+
+    protected getNormalizedMode(): ModeName {
+        return this.mode;
+    }
 
     /**
      * Returns name with accidentals formatted
@@ -180,6 +185,7 @@ export abstract class AbstractMusicScale implements MusicScale {
         return getChordInScale(chord, this);
     }
 
+    /** @override */
     toString(): string {
         return this.name;
     }

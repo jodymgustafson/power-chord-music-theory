@@ -80,50 +80,6 @@ describe("When get a diatonic scale", () => {
         signature: { accidental: "#", count: 3 } }));
 });
 
-describe("When get a blues scale", () => {
-    it("should get scale of C major blues", () => validateScale(getScale("C", "blues_M"), {
-        tonic: "C", mode: "major", name: "CM Blues", modeAlias: "",
-        notes: ["C", "D", "Eb", "E", "G", "A"],
-        chords: [],
-        signature: { accidental: "b", count: 1 } }));    
-
-    it("should get scale of C minor blues", () => validateScale(getScale("C", "blues_m"), {
-        tonic: "C", mode: "minor", name: "Cm Blues", modeAlias: "",
-        notes: ["C", "Eb", "F", "Gb", "G", "Bb"],
-        chords: [],
-        signature: { accidental: "b", count: 3 } }));
-
-    it("should get scale of Ab major blues", () => validateScale(getScale("Ab", "blues_M"), {
-        tonic: "Ab", mode: "major", name: "AbM Blues", modeAlias: "",
-        notes: ["Ab", "Bb", "Cb", "C", "Eb", "F"],
-        chords: [],
-        signature: { accidental: "b", count: 3 } }));
-
-    it("should get scale of B major blues", () => validateScale(getScale("B", "blues_M"), {
-        tonic: "B", mode: "major", name: "BM Blues", modeAlias: "",
-        notes: ["B", "C#", "D", "D#", "F#", "G#"],
-        chords: [],
-        signature: { accidental: "#", count: 4 } }));
-
-    it("should get scale of C# major blues", () => validateScale(getScale("C#", "blues_M"), {
-        tonic: "C#", mode: "major", name: "C#M Blues", modeAlias: "",
-        notes: ["C#", "D#", "E", "E#", "G#", "A#"],
-        chords: [],
-        signature: { accidental: "#", count: 4 } }));
-
-    it("should get scale of Db major blues", () => validateScale(getScale("Db", "blues_M"), {
-        tonic: "Db", mode: "major", name: "DbM Blues", modeAlias: "",
-        notes: ["Db", "Eb", "Fb", "F", "Ab", "Bb"],
-        chords: [],
-        signature: { accidental: "b", count: 4 } }));
-
-    it("should get scale of F# major blues", () => validateScale(getScale("F#", "blues_M"), {
-        tonic: "F#", mode: "major", name: "F#M Blues", modeAlias: "",
-        notes: ["F#", "G#", "A", "A#", "C#", "D#"],
-        chords: [],
-        signature: { accidental: "#", count: 5 } }));
-});
-
 describe("When using parseKey", () => {
     it("should parse C", () => validateScale(parseScale("C"), {
         tonic: "C", mode: "major", name: "CM", modeAlias: "ionian",

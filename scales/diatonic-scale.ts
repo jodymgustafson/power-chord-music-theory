@@ -42,7 +42,7 @@ export class DiatonicMusicScale extends AbstractMusicScale {
             `(${this.mode.slice(0, 3)})`);        
     }
 
-    protected getNormalizeMode(): ScaleName {
+    protected getNormalizedMode(): ModeName {
         return normalizeMode(this.mode);
     }
 

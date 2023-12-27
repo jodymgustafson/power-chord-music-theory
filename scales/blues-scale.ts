@@ -2,7 +2,7 @@ import Chord from "../chords";
 import Note from "../notes";
 import { AbstractMusicScale, KeySignature, ModeName, ScaleName } from "./music-scale";
 
-type BluesMode = "major" | "minor";
+export type BluesMode = "major" | "minor";
 // type BluesSignature = {
 //     [key: BluesMode]: {
 //         [note: NoteName]: KeySignature
@@ -46,10 +46,6 @@ export class BluesScale extends AbstractMusicScale {
 
     protected getName(): string {
         return this.tonic.name + (this.mode === "major" ? "M" : "m") + " Blues";
-    }
-
-    protected getNormalizeMode(): ScaleName {
-        return (this.mode === "major" ? "blues_M" : "blues_m")
     }
 
     protected getModeAlias(): "" | ModeName {

@@ -85,5 +85,4 @@ describe("When get fifths for C#M", () => {
     it("should get notes in natural order", () => {
         expect(cof.orderedFifths.map(f => f.note.name)).toEqual(["C#", "D#", "E#", "F#", "G#", "A#", "B#"]);
     });
-
 });
