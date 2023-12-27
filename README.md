@@ -39,7 +39,9 @@ Therefore to check if two notes have the same name and octave simply use the equ
 
 ## Scales
 - Scales are immutable objects that are a collection of notes and chords ordered by pitch.
-- Seven scales modes are supported: major/ionian, minor/aeolian, dorian, phrygian, lydian, mixolydian, locrian
+- Three scales are available: diatonic, pentatonic and blues
+- Seven diatonic modes are supported: major/ionian, minor/aeolian, dorian, phrygian, lydian, mixolydian, locrian
+- Major and minor modes are supported for pentatonic and blues scales
 - Get an instance by calling the `getScale()` function
 - To check for equality use the `equals()` method
 - If you want to check equality without regards to the tonic name use `isSameAs()`
@@ -48,7 +50,7 @@ Therefore to check if two notes have the same name and octave simply use the equ
     - `getNoteInScale()` Gets a note with the name adjusted to the scale
     - `getChordInScale()` Gets a chord with the name adjusted to the scale
 - Other functions available:
-    - `parseScale()` Parses a scale by name and mode (e.g. C#m)
+    - `parseScale()` Parses a diatonic scale by name and mode (e.g. C#m)
 
 ## Chord Lookup
 - You can lookup chords from a set of notes using the `getChordFromNotes()` function.
