@@ -1,7 +1,7 @@
 import { getScale } from "../scales";
 
 function validateScale(testData: any): void {
-    const scale = getScale(testData.tonic, "pentatonic", testData.mode);
+    const scale = getScale(testData.tonic, testData.mode, "pentatonic");
     expect(scale.tonic.name).withContext("tonic").toBe(testData.tonic);
     expect(scale.mode).withContext("mode").toBe(testData.mode);
     expect(scale.modeAlias).withContext("modeAlias").toBe(testData.modeAlias);

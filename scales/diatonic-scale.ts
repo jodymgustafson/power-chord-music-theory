@@ -1,7 +1,7 @@
 import Chord, { ChordQuality, getChord } from "../chords";
 import { MODE_NAMES, normalizeMode } from "../circle-of-fifths";
 import Note, { Accidental, NoteName } from "../notes";
-import { AbstractMusicScale, KeySignature, ModeName } from "./music-scale";
+import { AbstractMusicScale, KeySignature, ModeName, ScaleType } from "./music-scale";
 
 /** Mode name offsets to get chords in a scale */
 const OFFSETS_BY_MODE_NAME: { [key: string]: number } = {
@@ -32,8 +32,8 @@ const SCALE_INTERVALS: { [key: string]: number[] } = {
 };
 
 export class DiatonicMusicScale extends AbstractMusicScale {
-    constructor(tonic: Note, mode: ModeName = "major") {
-        super(tonic, mode);
+    constructor(tonic: Note, mode: ModeName = "major", scale: ScaleType = "diatonic") {
+        super(tonic, mode, scale);
     }
 
     protected getModeAlias(): "" | ModeName {

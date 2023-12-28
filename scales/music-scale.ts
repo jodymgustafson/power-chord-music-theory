@@ -2,7 +2,7 @@ import { formatAccidentals } from "..";
 import Chord, { NoteOrName } from "../chords";
 import Note, { Accidental, NoteName, getNote } from "../notes";
 
-export type ScaleName = 
+export type ScaleType = 
     "diatonic" |
     "pentatonic" |
     "blues";
@@ -25,6 +25,8 @@ export interface MusicScale {
     readonly tonic: Note;
     /** The mode of the scale */
     readonly mode: ModeName;
+    /** the scale name */
+    readonly scaleType: ScaleType;
     /** The normalized mode of the scale (major => ionian, minor => aeolian) */
     readonly normalizedMode: ModeName;
     /** Gets the name of the scale */
@@ -87,15 +89,18 @@ export abstract class AbstractMusicScale implements MusicScale {
     /** @inheritdoc */
     readonly mode: ModeName;
     /** @inheritdoc */
+    readonly scaleType: ScaleType;
+    /** @inheritdoc */
     readonly normalizedMode: ModeName;
     
     protected _notes: Note[];
     protected _chords: Chord[];
     protected _signature: KeySignature;
 
-    constructor(tonic: Note, mode: ModeName = "major") {
+    constructor(tonic: Note, mode: ModeName, scale: ScaleType) {
         this.tonic = tonic;
         this.mode = mode;
+        this.scaleType = scale;
         this.normalizedMode = this.getNormalizedMode();
         this.name = this.getName();
         this.modeAlias = this.getModeAlias();

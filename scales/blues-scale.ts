@@ -43,7 +43,7 @@ const BLUES_SIGNATURES: { [key in BluesMode]: KeySignature[] } = {
 
 export class BluesScale extends AbstractMusicScale {
     constructor(tonic: Note, mode: BluesMode = "minor") {
-        super(tonic, mode);
+        super(tonic, mode, "blues");
 
         if (!SCALE_INTERVALS[mode]) {
             throw new Error("Invalid mode for blues scale: " + mode);

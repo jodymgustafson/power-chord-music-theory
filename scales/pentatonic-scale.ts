@@ -55,7 +55,7 @@ const ACCIDENTALS = {
  */
 export class PentatonicScale extends DiatonicMusicScale {
     constructor(tonic: Note, mode: PentatonicMode = "major") {
-        super(tonic, mode);
+        super(tonic, mode, "pentatonic");
 
         if (!SCALE_INTERVALS[mode]) {
             throw new Error("Invalid mode for pentatonic scale: " + mode);
@@ -83,21 +83,6 @@ export class PentatonicScale extends DiatonicMusicScale {
 
     /** @override */
     protected getSignature(): KeySignature {
-        // const ks: KeySignature = Object.assign({}, SIGNATURES[this.mode][this.tonic.number]);
-        // if (this.tonic.hasAccidental && this.tonic.accidental !== ks.accidental) {
-        //     ks.accidental = this.tonic.accidental;
-        // }
-        // return ks;
-
-        // return { accidental: this.tonic.accidental, count: 0 };
-        // let notes = super.notes;
-        // if (this.mode === "major") {
-        //     notes = notes.slice(0, 3).concat(...notes.slice(5, 7));
-        // }
-        // else {
-        //     notes = [notes[0]].concat(...notes.slice(2, 5)).concat(notes[6]);
-        // }
-
         return {
             accidental: this.accidental,
             count: this.notes.reduce((cnt, n) => n.hasAccidental ? cnt + 1 : cnt, 0)

@@ -12,6 +12,39 @@ export function validateScale(expected: any): void {
     expect(scale.notes.map(c => c.name)).withContext("notes").toEqual(expected.notes);
 }
 
+describe("When get a scale", () => {
+    it("should get a major diatonic scale when only tonic parameter", () => {
+        const scale = getScale("A");
+        expect(scale.name).toBe("AM");
+        expect(scale.mode).toBe("major");
+        expect(scale.scaleType).toBe("diatonic");
+    });
+    it("should get a diatonic scale when no scale type", () => {
+        const scale = getScale("A", "minor");
+        expect(scale.name).toBe("Am");
+        expect(scale.mode).toBe("minor");
+        expect(scale.scaleType).toBe("diatonic");
+    });
+    it("should get a specific blues scale", () => {
+        const scale = getScale("A", "minor", "blues");
+        expect(scale.name).toBe("Am Blues");
+        expect(scale.mode).toBe("minor");
+        expect(scale.scaleType).toBe("blues");
+    });
+    it("should get a specific pentatonic scale", () => {
+        const scale = getScale("A", "major", "pentatonic");
+        expect(scale.name).toBe("AM Pentatonic");
+        expect(scale.mode).toBe("major");
+        expect(scale.scaleType).toBe("pentatonic");
+    });
+    it("should get an error when invalid pentatonic mode", () => {
+        expect(() => getScale("A", "ionian" as any, "pentatonic")).toThrowError("Invalid mode for pentatonic scale: ionian");
+    });
+    it("should get an error when invalid blues mode", () => {
+        expect(() => getScale("A", "ionian" as any, "blues")).toThrowError("Invalid mode for blues scale: ionian");
+    });
+});
+
 describe("When parse a scale", () => {
     it("should parse C", () => validateScale({
         tonic: "C", mode: "major", name: "CM", modeAlias: "ionian",
