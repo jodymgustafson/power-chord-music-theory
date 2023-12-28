@@ -12,22 +12,22 @@ const scaleCache: { [key: string]: MusicScale } = {};
  * Gets an instance of a diatonic major scale
  * @param tonic Name of the tonic note
  */
-export function getScale(tonic: NoteName): MusicScale;
+export function getScale(tonic: NoteOrName): MusicScale;
 /**
  * Gets an instance of a diatonic scale
  * @param tonic Name of the tonic note
  * @param mode Mode for the scale
  */
-export function getScale(tonic: NoteName, mode: ModeName): MusicScale;
+export function getScale(tonic: NoteOrName, mode: ModeName): MusicScale;
 /**
  * Gets an instance of a scale
  * @param tonic Name of the tonic note
  * @param mode Mode of the scale
  * @param scale Type of the scale
  */
-export function getScale(tonic: NoteName, mode: ModeName, scale: "diatonic"): MusicScale;
-export function getScale(tonic: NoteName, mode: BluesMode, scale: "blues"): MusicScale;
-export function getScale(tonic: NoteName, mode: PentatonicMode, scale: "pentatonic"): MusicScale;
+export function getScale(tonic: NoteOrName, mode: ModeName, scale: "diatonic"): MusicScale;
+export function getScale(tonic: NoteOrName, mode: BluesMode, scale: "blues"): MusicScale;
+export function getScale(tonic: NoteOrName, mode: PentatonicMode, scale: "pentatonic"): MusicScale;
 export function getScale(tonic: NoteOrName, mode: ModeName = "major", scaleOrMode: ScaleType = "diatonic"): MusicScale {
     if (typeof tonic === "string") {
         tonic = getNote(tonic);

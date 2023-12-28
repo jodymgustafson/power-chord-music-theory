@@ -2,12 +2,13 @@ import { formatAccidentals } from "..";
 import Chord, { NoteOrName } from "../chords";
 import Note, { Accidental, NoteName, getNote } from "../notes";
 
-export type ScaleType = 
+export type ScaleType =
     "diatonic" |
     "pentatonic" |
     "blues";
 
-export type ModeName = "lydian" |
+export type ModeName =
+    "lydian" |
     "major" | "ionian" |
     "mixolydian" |
     "dorian" |
@@ -92,7 +93,7 @@ export abstract class AbstractMusicScale implements MusicScale {
     readonly scaleType: ScaleType;
     /** @inheritdoc */
     readonly normalizedMode: ModeName;
-    
+
     protected _notes: Note[];
     protected _chords: Chord[];
     protected _signature: KeySignature;

@@ -1,5 +1,6 @@
 import { parseScale, getScale } from "../scales";
 import { parseChord, getChord } from "../chords";
+import { getNote } from "../notes";
 
 export function validateScale(expected: any): void {
     const scale = parseScale(expected.name)
@@ -20,7 +21,7 @@ describe("When get a scale", () => {
         expect(scale.scaleType).toBe("diatonic");
     });
     it("should get a diatonic scale when no scale type", () => {
-        const scale = getScale("A", "minor");
+        const scale = getScale(getNote("A"), "minor");
         expect(scale.name).toBe("Am");
         expect(scale.mode).toBe("minor");
         expect(scale.scaleType).toBe("diatonic");
@@ -32,7 +33,7 @@ describe("When get a scale", () => {
         expect(scale.scaleType).toBe("blues");
     });
     it("should get a specific pentatonic scale", () => {
-        const scale = getScale("A", "major", "pentatonic");
+        const scale = getScale(getNote("A"), "major", "pentatonic");
         expect(scale.name).toBe("AM Pentatonic");
         expect(scale.mode).toBe("major");
         expect(scale.scaleType).toBe("pentatonic");
