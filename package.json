@@ -1,6 +1,6 @@
 {
   "name": "@power-chord/music-theory",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Music theory library",
   "main": "index.js",
   "repository": {
@@ -8,6 +8,8 @@
     "url": "https://github.com/jodymgustafson/power-chord-music-theory"
   },
   "scripts": {
+    "clean": "rm -r ./**/*.js && rm -r ./**/*.js.map && rm -r ./*.d.ts",
+    "build": "tsc",
     "test": "jasmine",
     "package": "npm pack",
     "lint": "eslint **/*.ts"
@@ -19,6 +21,7 @@
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
     "eslint": "^6.8.0",
-    "jasmine": "^3.99.0"
+    "jasmine": "^3.99.0",
+    "typescript": "^5.3.3"
   }
 }

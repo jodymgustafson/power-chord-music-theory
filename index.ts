@@ -8,12 +8,12 @@ import { getDefaultTuningGuitarLookup } from "./guitar/default-tuning";
 import { formatAccidentals, unformatAccidentals } from "./util/format";
 import { parseScale, getScale } from "./scales";
 import { getDefaultTuningUkuleleLookup } from "./guitar/ukulele-default-tuning";
-import { MusicScale, KeySignature, ModeName } from "./scales/music-scale";
+import { MusicScale, KeySignature, ModeName, ScaleName } from "./scales/music-scale";
 
 export {
     NoteName, Note, getNote, getNotes, getFormattedNoteNames, parseNote, deserializeNote,
     Chord, ChordQuality, getChord, parseChord,
-    MusicScale, KeySignature, ModeName, parseScale, getScale,
+    MusicScale, KeySignature, ModeName, ScaleName, parseScale, getScale,
     CircleOfFifths, FifthInfo, ModeQuality, getCircleOfFifths,
     ChordProgressionCalculator, getChordProgressionCalculator,
     getChordFromNotes,
